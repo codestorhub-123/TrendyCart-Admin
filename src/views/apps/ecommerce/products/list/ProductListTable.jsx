@@ -44,7 +44,9 @@ import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 
 // Util Imports
+import { getInitials } from '@/utils/getInitials'
 import { getLocalizedUrl } from '@/utils/i18n'
+import { getImageUrl } from '@/utils/imageUrl'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -138,7 +140,7 @@ const ProductListTable = ({ productData }) => {
         header: 'Product',
         cell: ({ row }) => (
           <div className='flex items-center gap-4'>
-            <img src={row.original.image} width={38} height={38} className='rounded bg-actionHover' />
+            <img src={getImageUrl(row.original.image)} width={38} height={38} className='rounded bg-actionHover' />
             <div className='flex flex-col'>
               <Typography className='font-medium' color='text.primary'>
                 {row.original.productName}

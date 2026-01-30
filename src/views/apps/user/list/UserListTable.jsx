@@ -22,6 +22,7 @@ import MenuItem from '@mui/material/MenuItem'
 
 // Third-party Imports
 import classnames from 'classnames'
+import moment from 'moment'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
@@ -46,6 +47,7 @@ import CustomAvatar from '@core/components/mui/Avatar'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 
 import { getAllUsers, blockUnblockUser } from '@/services/userService'
 
@@ -209,9 +211,11 @@ const UserListTable = ({ tableData }) => {
         header: 'REGISTER DATE',
         cell: ({ row }) => {
             const dateStr = row.original.createdAt || row.original.created_at || row.original.date
-            if (!dateStr) return <Typography>N/A</Typography>
-            const date = new Date(dateStr)
-            return <Typography>{isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString()}</Typography>
+            if (!dateStr) return <Typography color='text.secondary'>-</Typography>
+            
+            // Try parsing with moment - handle DD/MM/YYYY and ISO formats
+            const m = moment(dateStr, ['DD/MM/YYYY', moment.ISO_8601], true)
+            return <Typography>{m.isValid() ? m.format('DD MMM YYYY') : dateStr}</Typography>
         }
       }),
       columnHelper.accessor('block', {
@@ -264,46 +268,39 @@ const UserListTable = ({ tableData }) => {
     getCoreRowModel: getCoreRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    // getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
+  const UserAvatar = ({ url, fullName, size = 34 }) => {
+    const [imgError, setImgError] = useState(false)
+
+    const avatarProps = {
+      variant: 'rounded',
+      skin: 'light',
+      color: 'primary',
+      size,
+      sx: {
+        backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
+        color: 'var(--mui-palette-primary-main)'
+      }
+    }
+
+    if (url && !imgError) {
+      return <CustomAvatar src={url} {...avatarProps} onError={() => setImgError(true)} />
+    }
+
+    return <CustomAvatar {...avatarProps}>{getInitials(fullName)}</CustomAvatar>
+  }
+
   const getAvatar = params => {
     const { avatar, fullName } = params
+    const url = getImageUrl(avatar)
 
-    if (avatar) {
-      return (
-        <CustomAvatar
-          src={avatar}
-          variant='rounded'
-          skin='light'
-          color='primary'
-          size={34}
-          sx={{
-            backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
-            color: 'var(--mui-palette-primary-main)'
-          }}
-        />
-      )
-    } else {
-      return (
-        <CustomAvatar
-          variant='rounded'
-          skin='light'
-          color='primary'
-          size={34}
-          sx={{
-            backgroundColor: 'var(--mui-palette-primary-lightOpacity)',
-            color: 'var(--mui-palette-primary-main)'
-          }}
-        >
-          {getInitials(fullName)}
-        </CustomAvatar>
-      )
-    }
+    return <UserAvatar url={url} fullName={fullName} />
   }
 
   return (

@@ -7,20 +7,17 @@ import CustomAvatar from '@core/components/mui/Avatar'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 
 const ProfileHeader = ({ data, roleLabel, roleColor = 'primary' }) => {
-  const getAvatarSrc = avatar => {
-    if (!avatar) return null
-    if (avatar.startsWith('http')) return avatar
-    return `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080'}/${avatar.replace(/^\/+/, '')}`
-  }
+
 
   return (
     <div className='flex flex-col gap-6'>
       <div className='flex items-center justify-center flex-col gap-4'>
         <div className='flex flex-col items-center gap-4'>
           {data?.avatar ? (
-            <CustomAvatar alt={`${roleLabel}-profile`} src={getAvatarSrc(data.avatar)} variant='rounded' size={120} />
+            <CustomAvatar alt={`${roleLabel}-profile`} src={getImageUrl(data.avatar)} variant='rounded' size={120} />
           ) : (
             <CustomAvatar alt={`${roleLabel}-profile`} variant='rounded' size={120}>
               {getInitials(data?.name || '')}

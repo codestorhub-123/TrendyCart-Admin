@@ -1,10 +1,9 @@
-import { getApiBase } from '@/utils/getApiBase'
+import { getApiBase, getHeaders } from '@/utils/getApiBase'
 
-const getHeaders = () => {
-  const token = localStorage.getItem('token')
+const getJsonHeaders = () => {
   return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`
+    ...getHeaders(),
+    'Content-Type': 'application/json'
   }
 }
 
@@ -13,7 +12,7 @@ export const getAllPromoCodes = async () => {
   try {
     const res = await fetch(url, {
       method: 'GET',
-      headers: getHeaders()
+      headers: getJsonHeaders()
     })
     return res.json()
   } catch (error) {
@@ -27,7 +26,7 @@ export const createPromoCode = async (data) => {
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: getHeaders(),
+      headers: getJsonHeaders(),
       body: JSON.stringify(data)
     })
     return res.json()
@@ -42,7 +41,7 @@ export const updatePromoCode = async (data, promoCodeId) => {
   try {
     const res = await fetch(url, {
       method: 'POST', // Based on the user provided swagger/route
-      headers: getHeaders(),
+      headers: getJsonHeaders(),
       body: JSON.stringify(data)
     })
     return res.json()
@@ -57,7 +56,7 @@ export const deletePromoCode = async (promoCodeId) => {
   try {
     const res = await fetch(url, {
       method: 'DELETE',
-      headers: getHeaders()
+      headers: getJsonHeaders()
     })
     return res.json()
   } catch (error) {

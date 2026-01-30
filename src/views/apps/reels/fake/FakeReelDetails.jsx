@@ -19,6 +19,7 @@ import Button from '@mui/material/Button'
 
 import ProductVideoDialog from './ProductVideoDialog'
 import { detailsOfReel } from '@/services/reelService'
+import { getImageUrl } from '@/utils/imageUrl'
 
 const FakeReelDetails = () => {
   const { id } = useParams()
@@ -99,7 +100,7 @@ const FakeReelDetails = () => {
                                 <TableCell>
                                     <div className="w-[34px] h-[34px] rounded overflow-hidden">
                                         {product.mainImage ? (
-                                            <img src={product.mainImage} alt={product.productName} className="w-full h-full object-cover" />
+                                            <img src={getImageUrl(product.mainImage)} alt={product.productName} className="w-full h-full object-cover" />
                                         ) : (
                                             <div className="w-full h-full bg-gray-200" />
                                         )}

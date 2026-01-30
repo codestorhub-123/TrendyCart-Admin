@@ -40,6 +40,7 @@ import {
 // Component Imports
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
+import { getImageUrl } from '@/utils/imageUrl'
 import LevelDialog from '@/components/dialogs/level'
 
 // Service Imports
@@ -89,16 +90,7 @@ const LevelListTable = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [levelToDelete, setLevelToDelete] = useState(null)
 
-  // API Base URL
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080'
 
-  // Resolve image URL
-  const resolveImageUrl = imagePath => {
-    if (!imagePath) return ''
-    const normalized = imagePath.replace(/\\/g, '/')
-    if (normalized.startsWith('http')) return normalized
-    return `${API_BASE}/${normalized}`
-  }
 
   // Load levels function
   const loadLevels = async () => {
@@ -202,7 +194,7 @@ const LevelListTable = () => {
             <div className='text-center'>
               {level.image ? (
                 <img
-                  src={resolveImageUrl(level.image)}
+                  src={getImageUrl(level.image)}
                   alt={`Level ${level.level}`}
                   className='w-16 h-16 object-cover rounded-lg border border-pink-100 inline-block'
                 />

@@ -1,19 +1,4 @@
-import { getApiBase } from '@/utils/getApiBase'
-
-const getHeaders = () => {
-  const token = localStorage.getItem('token')
-  return {
-    Authorization: `Bearer ${token}`
-  }
-}
-
-const getHeadersMultipart = () => {
-  const token = localStorage.getItem('token')
-  return {
-    Authorization: `Bearer ${token}`
-    // Don't set Content-Type for multipart/form-data - browser will set it with boundary
-  }
-}
+import { getApiBase, getHeaders } from '@/utils/getApiBase'
 
 // Create product by admin
 export const createProductByAdmin = async (formData) => {
@@ -21,7 +6,7 @@ export const createProductByAdmin = async (formData) => {
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: getHeadersMultipart(),
+      headers: getHeaders(),
       body: formData
     })
     return res.json()
@@ -39,7 +24,7 @@ export const createFakeProductByAdmin = async (formData) => {
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: getHeadersMultipart(),
+      headers: getHeaders(),
       body: formData
     })
     return res.json()
@@ -55,7 +40,7 @@ export const updateProduct = async (formData, productId) => {
   try {
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: getHeadersMultipart(),
+      headers: getHeaders(),
       body: formData
     })
     return res.json()

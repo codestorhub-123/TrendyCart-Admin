@@ -23,6 +23,8 @@ import CustomTextField from '@core/components/mui/TextField'
 import CustomAvatar from '@core/components/mui/Avatar'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import { fetchAdminEarnings } from '@/services/earningService'
+import { getImageUrl } from '@/utils/imageUrl'
+import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -81,12 +83,19 @@ const AdminEarningTable = () => {
       columnHelper.accessor('product', {
         header: 'PRODUCT',
         cell: ({ row }) => {
-            // API doesn't seem to provide product details in the provided JSON sample
-            const product = row.original.productId || {}
+            const { productName, productImage } = row.original
             return (
                 <div className='flex items-center gap-3'>
-                    <CustomAvatar src={product.mainImage} variant='rounded' size={34} />
-                    <Typography color='text.primary'>{product.productName || '-'}</Typography>
+                    <CustomAvatar 
+                      src={getImageUrl(productImage)} 
+                      variant='rounded' 
+                      size={34}
+                      skin='light'
+                      color='primary'
+                    >
+                      {getInitials(productName || '-')}
+                    </CustomAvatar>
+                    <Typography color='text.primary'>{productName || '-'}</Typography>
                 </div>
             )
         },
@@ -94,7 +103,7 @@ const AdminEarningTable = () => {
       }),
       columnHelper.accessor('sellerName', {
         header: 'SELLER NAME',
-        cell: ({ row }) => <Typography color='text.primary'>{`${row.original.sellerName || ''} ${row.original.lastName || ''}`.trim()}</Typography>,
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.sellerName || '-'}</Typography>,
         size: 150
       }),
       columnHelper.accessor('businessName', {
@@ -119,7 +128,7 @@ const AdminEarningTable = () => {
       }),
       columnHelper.accessor('date', {
         header: 'DATE AND TIME',
-        cell: ({ row }) => <Typography>{row.original.date ? moment(row.original.date).format('DD/MM/YYYY, h:mm:ss A') : '-'}</Typography>,
+        cell: ({ row }) => <Typography>{row.original.date ? moment(row.original.date).format('DD MMM YYYY') : '-'}</Typography>,
         size: 200
       })
     ],
@@ -152,6 +161,7 @@ const AdminEarningTable = () => {
               startDate={startDate}
               id='date-range-picker'
               placeholderText='Select Date'
+              dateFormat='dd MMM yyyy'
               onChange={(dates) => {
                 const [start, end] = dates
                 setStartDate(start)

@@ -12,6 +12,7 @@ import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import { useSelector } from 'react-redux'
 import { getLiveSellerList } from '@/services/liveSellerService'
+import { getImageUrl } from '@/utils/imageUrl'
 
 const LiveSellerProducts = () => {
   const router = useRouter()
@@ -72,7 +73,7 @@ const LiveSellerProducts = () => {
               >
                 <div className='relative pt-[100%]'>
                   <img
-                    src={product.mainImage}
+                    src={getImageUrl(product.mainImage)}
                     alt={product.productName}
                     style={{
                       position: 'absolute',

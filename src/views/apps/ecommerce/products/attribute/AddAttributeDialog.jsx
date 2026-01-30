@@ -21,13 +21,16 @@ import { useForm, Controller } from 'react-hook-form'
 
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
-import { getApiBase } from '@/utils/getApiBase'
+import { getImageUrl } from '@/utils/imageUrl'
+import { listAllSubCategories } from '@/services/subCategoryService'
 
-const AddAttributeDialog = ({ open, handleClose, onSubmit, attributeData, subCategories }) => {
+const AddAttributeDialog = ({ open, handleClose, onSubmit, attributeData, subCategories, categoriesData = [] }) => {
   const [fieldValues, setFieldValues] = useState([])
   const [currentFieldValue, setCurrentFieldValue] = useState('')
   const [fieldImage, setFieldImage] = useState(null)
   const [fieldImagePreview, setFieldImagePreview] = useState('')
+  const [dynamicSubCategories, setDynamicSubCategories] = useState([])
+  const [isSubLoading, setIsSubLoading] = useState(false)
 
   const isEdit = !!attributeData
 
@@ -50,48 +53,69 @@ const AddAttributeDialog = ({ open, handleClose, onSubmit, attributeData, subCat
   })
 
   // Watchers
-  const selectedCategory = watch('category')
+  const selectedCategoryId = watch('category')
   const selectedFieldType = watch('fieldType')
 
-  // Derive Categories from SubCategories
-  const categories = [...new Set(subCategories.map(sub => 
-    typeof sub.category === 'object' ? sub.category.name : sub.category
-  ).filter(Boolean))]
+  // Use passed categoriesData for the dropdown
+  const categoriesList = categoriesData
 
-  // Filter SubCategories based on selected Category
-  const filteredSubCategories = selectedCategory
-    ? subCategories.filter(sub => {
-        const catName = typeof sub.category === 'object' ? sub.category.name : sub.category
-        return catName === selectedCategory
-      })
-    : subCategories
+  // Fetch SubCategories when Category changes via API
+  useEffect(() => {
+    const fetchSubs = async () => {
+      if (selectedCategoryId) {
+        setIsSubLoading(true)
+        try {
+          const res = await listAllSubCategories(selectedCategoryId)
+          if (res && res.status) {
+            // Check if backend returns 'data' or 'subCategories'
+            setDynamicSubCategories(res.data || res.subCategories || [])
+          }
+        } catch (error) {
+          console.error('Error fetching filtered subcategories:', error)
+        } finally {
+          setIsSubLoading(false)
+        }
+      } else {
+        setDynamicSubCategories([])
+      }
+    }
+    fetchSubs()
+  }, [selectedCategoryId])
 
   useEffect(() => {
     if (open) {
       if (attributeData) {
         // Populate form for Edit
-        const subCat = subCategories.find(s => s._id === (attributeData.subCategory?._id || attributeData.subCategoryId))
-        const catName = subCat 
-          ? (typeof subCat.category === 'object' ? subCat.category.name : subCat.category) 
-          : ''
+        const targetSubId = attributeData.subCategory?._id || attributeData.subCategoryId
+        let catId = ''
+
+        // Get category ID from populated subCategory
+        if (attributeData.subCategory && typeof attributeData.subCategory === 'object') {
+          const categoryObj = attributeData.subCategory.category
+          catId = typeof categoryObj === 'object' ? categoryObj._id : categoryObj
+        }
+
+        // Search in local list if needed to find category for this sub
+        if (!catId && subCategories.length > 0) {
+          const subCat = subCategories.find(s => (s._id === targetSubId || s.subCategoryId === targetSubId))
+          if (subCat) {
+            const cObj = subCat.category
+            catId = typeof cObj === 'object' ? cObj._id : cObj
+          }
+        }
 
         reset({
-          subCategoryId: attributeData.subCategory?._id || attributeData.subCategoryId || '',
+          subCategoryId: targetSubId || '',
           name: attributeData.name || '',
           fieldType: attributeData.fieldType || '',
           isRequired: attributeData.isRequired || false,
           status: attributeData.status === 'Active' || attributeData.status === true,
-          category: catName
+          category: catId || ''
         })
-        // Logic to construct image URL
         const rawImage = attributeData.image || ''
         let imageUrl = ''
         if (rawImage) {
-           if (rawImage.startsWith('http') || rawImage.startsWith('blob:')) {
-              imageUrl = rawImage
-           } else {
-              imageUrl = `${getApiBase().replace('/admin', '')}/${rawImage.replace(/\\/g, '/')}`
-           }
+          imageUrl = getImageUrl(rawImage)
         }
         setFieldValues(attributeData.fieldValues || [])
         setFieldImagePreview(imageUrl)
@@ -151,10 +175,10 @@ const AddAttributeDialog = ({ open, handleClose, onSubmit, attributeData, subCat
       formData.append('name', data.name)
       formData.append('fieldType', data.fieldType)
       formData.append('isRequired', data.isRequired)
-      formData.append('status', data.status ? 'Active' : 'Inactive')
+      formData.append('isActive', data.status)
       
       if (['4', '5', '6'].includes(String(data.fieldType))) {
-         fieldValues.forEach(val => formData.append('fieldValues[]', val))
+         fieldValues.forEach(val => formData.append('values[]', val))
       }
       
       if (fieldImage) {
@@ -211,11 +235,18 @@ const AddAttributeDialog = ({ open, handleClose, onSubmit, attributeData, subCat
                 fullWidth
                 label='Select Category'
                 placeholder='Select Category...'
-                SelectProps={{ displayEmpty: true }}
+                onChange={(e) => {
+                  field.onChange(e)
+                  setValue('subCategoryId', '') // Reset subcategory when category changes
+                }}
+                SelectProps={{ 
+                  displayEmpty: true,
+                  MenuProps: { PaperProps: { style: { maxHeight: 250 } } }
+                }}
               >
                 <MenuItem value=''>Select Category</MenuItem>
-                {categories.map((cat, index) => (
-                  <MenuItem key={index} value={cat}>{cat}</MenuItem>
+                {categoriesList.map((cat) => (
+                  <MenuItem key={cat._id} value={cat._id}>{cat.name}</MenuItem>
                 ))}
               </CustomTextField>
             )}
@@ -232,16 +263,21 @@ const AddAttributeDialog = ({ open, handleClose, onSubmit, attributeData, subCat
                 select
                 fullWidth
                 label='Select Subcategories'
+                disabled={!selectedCategoryId || isSubLoading} 
                 error={!!errors.subCategoryId}
-                helperText={errors.subCategoryId?.message}
-                SelectProps={{ displayEmpty: true }}
+                helperText={errors.subCategoryId?.message || (!selectedCategoryId ? 'Please select a category first' : isSubLoading ? 'Loading...' : '')}
+                SelectProps={{ 
+                  displayEmpty: true,
+                  MenuProps: { PaperProps: { style: { maxHeight: 250 } } }
+                }}
               >
-                <MenuItem value='' disabled>Select Subcategory</MenuItem>
-                {filteredSubCategories.map((sub, index) => {
-                  const id = sub.subCategoryId || sub._id || index
-                  const val = sub.subCategoryId || sub._id
+                <MenuItem value='' disabled>{isSubLoading ? 'Loading...' : 'Select Subcategory'}</MenuItem>
+                {dynamicSubCategories.map((sub) => {
+                  const id = sub.subCategoryId || sub._id
                   return (
-                    <MenuItem key={id} value={val}>{sub.name}</MenuItem>
+                    <MenuItem key={id} value={id}>
+                      {sub.name}
+                    </MenuItem>
                   )
                 })}
               </CustomTextField>
@@ -278,7 +314,10 @@ const AddAttributeDialog = ({ open, handleClose, onSubmit, attributeData, subCat
                 label='Field Type'
                 error={!!errors.fieldType}
                 helperText={errors.fieldType?.message}
-                SelectProps={{ displayEmpty: true }}
+                SelectProps={{ 
+                  displayEmpty: true,
+                  MenuProps: { PaperProps: { style: { maxHeight: 250 } } }
+                }}
               >
                 <MenuItem value='' disabled>Select Field Type</MenuItem>
                 <MenuItem value='1'>Text Input</MenuItem>

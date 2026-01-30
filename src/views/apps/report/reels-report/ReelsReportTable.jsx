@@ -10,6 +10,7 @@ import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 import CustomAvatar from '@core/components/mui/Avatar'
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -117,7 +118,7 @@ const ReelsReportTable = () => {
                         style={{ width: 50, height: 50, background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 4, overflow: 'hidden', position: 'relative', cursor: 'pointer' }}
                     >
                          {thumbnail ? (
-                            <img src={thumbnail} alt="thumbnail" className="w-full h-full object-cover" />
+                            <img src={getImageUrl(thumbnail)} alt="thumbnail" className="w-full h-full object-cover" />
                         ) : (
                              <div className="w-full h-full bg-gray-200" />
                         )}
@@ -268,7 +269,7 @@ const ReelsReportTable = () => {
                     {selectedVideo ? (
                         <div className="flex justify-center items-center bg-black rounded overflow-hidden">
                              <video 
-                                src={selectedVideo} 
+                                src={getImageUrl(selectedVideo)} 
                                 controls 
                                 autoPlay
                                 className='max-h-[70vh] w-auto' 

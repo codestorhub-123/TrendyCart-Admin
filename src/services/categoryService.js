@@ -1,11 +1,4 @@
-import { getApiBase } from '@/utils/getApiBase'
-
-const getHeaders = () => {
-  const token = localStorage.getItem('token')
-  return {
-    Authorization: `Bearer ${token}`
-  }
-}
+import { getApiBase, getHeaders } from '@/utils/getApiBase'
 
 export const listAllSubCategories = async () => {
   const url = `${getApiBase()}/admin/subCategory/categoryWiseSubCategory`

@@ -1,11 +1,4 @@
-import { getApiBase } from '@/utils/getApiBase'
-
-const getHeaders = () => {
-  const token = localStorage.getItem('token')
-  return {
-    Authorization: `Bearer ${token}`
-  }
-}
+import { getApiBase, getHeaders } from '@/utils/getApiBase'
 
 export const listAllAttributes = async (subCategoryId = '', fieldType = '') => {
   let url = `${getApiBase()}/admin/attributes/listAllAttributes`
@@ -36,7 +29,7 @@ export const insertAttributes = async (formData) => {
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: getAuthHeadersWithoutContentType(),
+      headers: getHeaders(),
       body: formData
     })
     const contentType = res.headers.get('content-type')
@@ -57,7 +50,7 @@ export const updateAttributes = async (formData) => {
   try {
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: getAuthHeadersWithoutContentType(),
+      headers: getHeaders(),
       body: formData
     })
     const contentType = res.headers.get('content-type')
@@ -93,11 +86,4 @@ export const destroyAttribute = async (attributeId) => {
   }
 }
 
-// Helper for multipart/form-data (let fetch set the boundary)
-const getAuthHeadersWithoutContentType = () => {
-  const token = localStorage.getItem('token') || localStorage.getItem('authToken')
-  const cleanToken = token?.startsWith('Bearer ') ? token.split(' ')[1] : token
-  return {
-    Authorization: `Bearer ${cleanToken}`
-  }
-}
+

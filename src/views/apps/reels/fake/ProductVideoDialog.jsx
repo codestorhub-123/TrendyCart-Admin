@@ -6,6 +6,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import { getImageUrl } from '@/utils/imageUrl'
 
 const ProductVideoDialog = ({ open, handleClose, productData, videoUrl }) => {
   return (
@@ -25,7 +26,7 @@ const ProductVideoDialog = ({ open, handleClose, productData, videoUrl }) => {
         <div className='flex gap-5'>
             <div className='w-1/2'>
                  {videoUrl ? (
-                     <video src={videoUrl} controls className='w-full rounded bg-black aspect-[9/16]' />
+                     <video src={getImageUrl(videoUrl)} controls className='w-full rounded bg-black aspect-[9/16]' />
                  ) : (
                      <div className='w-full h-64 bg-gray-200 flex items-center justify-center rounded'>
                          No Video
@@ -44,7 +45,11 @@ const ProductVideoDialog = ({ open, handleClose, productData, videoUrl }) => {
                 </Typography>
                  {productData?.seller && (
                      <Typography variant="subtitle2" className='mt-4'>
-                         Seller: {productData.seller} 
+                         Seller: {
+                           typeof productData.seller === 'object' 
+                             ? (productData.seller.businessName || `${productData.seller.firstName || ''} ${productData.seller.lastName || ''}`.trim() || '-')
+                             : productData.seller
+                         } 
                      </Typography>
                  )}
             </div>

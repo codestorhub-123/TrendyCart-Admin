@@ -12,6 +12,7 @@ import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import { useSelector } from 'react-redux'
+import { getImageUrl } from '@/utils/imageUrl'
 
 import { getProductDetailsForAdmin } from '@/services/productService'
 
@@ -77,7 +78,7 @@ const ProductDetail = ({ productId }) => {
               {/* Seller Info */}
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <Avatar 
-                    src={product.seller?.image} 
+                    src={getImageUrl(product.seller?.image)} 
                     alt={product.seller?.firstName}
                     sx={{ width: 60, height: 60, mr: 2 }}
                   />
@@ -92,7 +93,7 @@ const ProductDetail = ({ productId }) => {
               {/* Main Image */}
               <Box sx={{ mb: 2 }}>
                 <img 
-                  src={product.mainImage} 
+                  src={getImageUrl(product.mainImage)} 
                   alt={product.productName}
                   style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
                 />
@@ -104,7 +105,7 @@ const ProductDetail = ({ productId }) => {
                   {product.images.map((img, index) => (
                     <img 
                       key={index}
-                      src={img} 
+                      src={getImageUrl(img)} 
                       alt={`Product ${index + 1}`}
                       style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }}
                     />

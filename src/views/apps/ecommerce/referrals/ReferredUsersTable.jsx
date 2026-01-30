@@ -39,6 +39,9 @@ import TablePaginationComponent from '@components/TablePaginationComponent'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
+import { getImageUrl } from '@/utils/imageUrl'
+import { getInitials } from '@/utils/getInitials'
+
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -103,7 +106,9 @@ const ReferredUsersTable = ({ referralsData }) => {
         header: 'Users',
         cell: ({ row }) => (
           <div className='flex items-center gap-4'>
-            <CustomAvatar src={row.original.avatar} size={34} />
+            <CustomAvatar src={getImageUrl(row.original.avatar)} size={34} skin='light' color='primary'>
+              {getInitials(row.original.user || 'User')}
+            </CustomAvatar>
             <div className='flex flex-col items-start'>
               <Typography
                 component={Link}

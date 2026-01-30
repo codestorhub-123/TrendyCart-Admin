@@ -25,6 +25,7 @@ import CustomTextField from '@core/components/mui/TextField'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import { formatDateToMonthShort } from './utils'
 
 export const statusObj = {
@@ -201,7 +202,7 @@ const SidebarLeft = props => {
                       contact.avatar ? (
                         <Avatar
                           alt={contact.fullName}
-                          src={contact.avatar}
+                          src={getImageUrl(contact.avatar)}
                           key={option.toLowerCase().replace(/\s+/g, '-')}
                         />
                       ) : (

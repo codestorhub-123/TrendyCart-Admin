@@ -19,6 +19,7 @@ import CustomTextField from '@core/components/mui/TextField'
 import { getRealSeller } from '@/services/sellerService'
 import { getProductsBySeller } from '@/services/productService'
 import { createReel, updateReel } from '@/services/reelService'
+import { getImageUrl } from '@/utils/imageUrl'
 
 const AddEditReelDrawer = ({ open, handleClose, fetchData, editData }) => {
   const [sellerList, setSellerList] = useState([])
@@ -44,10 +45,10 @@ const AddEditReelDrawer = ({ open, handleClose, fetchData, editData }) => {
             productId: editData.productId?.[0]?._id || '', 
             videoType: editData.videoType === 1 ? 'file' : 'link', 
             video: editData.video,
-            videoPreview: editData.video,
+            videoPreview: getImageUrl(editData.video),
             thumbnailType: editData.thumbnailType === 1 ? 'file' : 'link',
             thumbnail: editData.thumbnail,
-            thumbnailPreview: editData.thumbnail
+            thumbnailPreview: getImageUrl(editData.thumbnail)
          })
          if (editData.sellerId?._id) {
              loadProducts(editData.sellerId._id)

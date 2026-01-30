@@ -45,6 +45,7 @@ import CreateFakeHost from '@/components/dialogs/create-fake-host'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 
 // Service Imports
 import { getHosts, getUserInfoAndNavigate } from '@/services/userService'
@@ -102,8 +103,7 @@ const HostListTable = ({ tableData, isFake = false, setIsFake }) => {
   const [selectedHostId, setSelectedHostId] = useState(null)
   const [createFakeHostOpen, setCreateFakeHostOpen] = useState(false)
 
-  // API Base URL
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE
+
 
   // Auth headers function
   const getAuthHeaders = () => {
@@ -410,10 +410,7 @@ const HostListTable = ({ tableData, isFake = false, setIsFake }) => {
   const getAvatar = params => {
     const { avatar, fullName } = params
     if (avatar) {
-      const avatarUrl = avatar.startsWith('http')
-        ? avatar
-        : `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080'}/${avatar.replace(/^\/+/, '')}`
-      return <CustomAvatar src={avatarUrl} size={34} />
+      return <CustomAvatar src={getImageUrl(avatar)} size={34} />
     } else {
       return <CustomAvatar size={34}>{getInitials(fullName)}</CustomAvatar>
     }

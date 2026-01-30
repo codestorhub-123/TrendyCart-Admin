@@ -1,10 +1,10 @@
-import { getApiBase } from '@/utils/getApiBase'
+import { getApiBase, getHeaders } from '@/utils/getApiBase'
 
-const getHeaders = () => {
-    const token = localStorage.getItem('token')
-    return {
-        Authorization: `Bearer ${token}`
-    }
+const getJsonHeaders = () => {
+  return {
+    ...getHeaders(),
+    'Content-Type': 'application/json'
+  }
 }
 
 export const getAllUsers = async (pageIndex, pageSize) => {

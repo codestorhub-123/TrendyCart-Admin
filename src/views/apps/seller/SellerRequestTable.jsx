@@ -31,6 +31,7 @@ import CustomChip from '@core/components/mui/Chip'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import { getAllSellerRequests, acceptOrNotSellerRequest } from '@/services/sellerRequestService'
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import tableStyles from '@core/styles/table.module.css'
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -104,7 +105,7 @@ const SellerRequestTable = () => {
           const name = `${row.original.firstName || ''}`.trim()
           return (
             <CustomAvatar
-              src={row.original.image}
+              src={getImageUrl(row.original.image)}
               alt={name}
               variant='rounded'
               skin='light'

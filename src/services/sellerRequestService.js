@@ -1,9 +1,8 @@
-import { getApiBase } from '@/utils/getApiBase'
+import { getApiBase, getHeaders } from '@/utils/getApiBase'
 
-const getHeaders = () => {
-  const token = localStorage.getItem('token')
+const getJsonHeaders = () => {
   return {
-    Authorization: `Bearer ${token}`,
+    ...getHeaders(),
     'Content-Type': 'application/json'
   }
 }
@@ -14,7 +13,7 @@ export const getAllSellerRequests = async (page = 1, limit = 20) => {
   try {
     const res = await fetch(url, {
       method: 'GET',
-      headers: getHeaders()
+      headers: getJsonHeaders()
     })
     return res.json()
   } catch (error) {
@@ -29,7 +28,7 @@ export const acceptOrNotSellerRequest = async (requestId, action) => {
   try {
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: getHeaders()
+      headers: getJsonHeaders()
     })
     return res.json()
   } catch (error) {

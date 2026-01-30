@@ -41,6 +41,7 @@ import TablePaginationComponent from '@components/TablePaginationComponent'
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
 import { getLocalizedUrl } from '@/utils/i18n'
+import { getImageUrl } from '@/utils/imageUrl'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -209,7 +210,7 @@ const CustomerListTable = ({ customerData }) => {
     const { avatar, customer } = params
 
     if (avatar) {
-      return <CustomAvatar src={avatar} skin='light' size={34} />
+      return <CustomAvatar src={getImageUrl(avatar)} skin='light' size={34} />
     } else {
       return (
         <CustomAvatar skin='light' size={34}>

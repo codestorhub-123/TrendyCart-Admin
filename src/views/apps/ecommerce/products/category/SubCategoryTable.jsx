@@ -37,7 +37,8 @@ import CustomAvatar from '@core/components/mui/Avatar'
 
 // Service Imports
 import { listAllSubCategories, deleteSubCategory, fetchActiveSubCategories } from '@/services/subCategoryService'
-import { getApiBase } from '@/utils/getApiBase'
+import { getImageUrl } from '@/utils/imageUrl'
+import { getInitials } from '@/utils/getInitials'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -120,34 +121,18 @@ const SubCategoryTable = () => {
         header: 'IMAGE',
         cell: ({ row }) => {
             const rawImage = row.original.image
-            const base = getApiBase()
-            let imageUrl = null
             
-            if (rawImage) {
-              if (rawImage.startsWith('http')) {
-                 imageUrl = encodeURI(rawImage)
-              } else {
-                 const cleanBase = base.replace('/admin', '')
-                 const cleanPath = rawImage.replace(/\\/g, '/')
-                 imageUrl = `${cleanBase}/${cleanPath}`
-              }
-            }
-
-            if (imageUrl) {
-                return (
-                    <img 
-                        src={imageUrl} 
-                        alt={row.original.name} 
-                        className='w-[34px] h-[34px] rounded object-cover'
-                        onError={(e) => {
-                            e.target.onerror = null; 
-                            e.target.src = '/images/avatars/1.png' // Fallback
-                        }}
-                    />
-                )
-            }
-            
-            return <CustomAvatar size={34} variant="rounded" />
+            return (
+                <CustomAvatar 
+                    src={getImageUrl(rawImage)} 
+                    size={34} 
+                    variant="rounded"
+                    skin='light'
+                    color='primary'
+                >
+                    {getInitials(row.original.name || '-')}
+                </CustomAvatar>
+            )
         }
       }),
       columnHelper.accessor('name', {

@@ -8,7 +8,6 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import Chip from '@mui/material/Chip'
-import Avatar from '@mui/material/Avatar'
 import Switch from '@mui/material/Switch'
 import Tooltip from '@mui/material/Tooltip'
 import TablePagination from '@mui/material/TablePagination'
@@ -31,6 +30,9 @@ import {
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import { useSelector } from 'react-redux'
+import { getImageUrl } from '@/utils/imageUrl'
+import { getInitials } from '@/utils/getInitials'
+import CustomAvatar from '@core/components/mui/Avatar'
 
 import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@components/TablePaginationComponent'
@@ -396,13 +398,18 @@ const FakeProductsTable = () => {
       columnHelper.accessor('mainImage', {
         header: 'PRODUCT',
         cell: ({ row }) => {
-          let imageUrl = row.original.mainImage
-          if (imageUrl && imageUrl.includes('localhost')) {
-             imageUrl = imageUrl.replace(/\\/g, '/')
-          }
           return (
             <div className='flex items-center gap-3'>
-              <Avatar src={imageUrl} alt={row.original.productName} variant='rounded' sx={{ width: 40, height: 40 }} />
+              <CustomAvatar
+                src={getImageUrl(row.original.mainImage)}
+                alt={row.original.productName || 'Product'}
+                variant='rounded'
+                skin='light'
+                color='primary'
+                size={34}
+              >
+                {getInitials(row.original.productName || 'Product')}
+              </CustomAvatar>
               <div style={{ maxWidth: '200px' }}>
                 <Typography className='line-clamp-2'>{row.original.productName}</Typography>
               </div>
@@ -868,7 +875,7 @@ const FakeProductsTable = () => {
               )}
               {editProduct?.mainImage && !editFormData.mainImage && (
                 <div style={{ marginTop: '8px' }}>
-                  <img src={editProduct.mainImage} alt='Current' style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                  <img src={getImageUrl(editProduct.mainImage)} alt='Current' style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                 </div>
               )}
             </Grid>

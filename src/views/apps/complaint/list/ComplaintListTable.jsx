@@ -40,6 +40,7 @@ import {
 
 // Component Imports
 import TablePaginationComponent from '@components/TablePaginationComponent'
+import { getImageUrl } from '@/utils/imageUrl'
 import { getAllComplains, resolveComplaint } from '@/services/userService'
 
 // Toast Imports
@@ -88,17 +89,9 @@ const ComplaintListTable = () => {
   const [selectedComplaint, setSelectedComplaint] = useState(null)
   const [resolveMessage, setResolveMessage] = useState('')
 
-  // API Base URL
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080'
 
-  // Resolve image URL
-  const resolveImageUrl = imagePath => {
-    if (!imagePath) return null
-    if (imagePath.startsWith('http')) return imagePath
-    let baseUrl = API_BASE.replace(/\/api\/v1\/?$/, '').replace(/\/+$/, '')
-    const cleanPath = imagePath.replace(/^\/+/, '')
-    return `${baseUrl}/${cleanPath}`
-  }
+
+
 
   // Load complaints function
   const loadComplaints = async () => {
@@ -218,7 +211,7 @@ const ComplaintListTable = () => {
         cell: ({ row }) => {
           const complaint = row.original
           // API returns: image (complaint image) or user.avatar
-          const imageUrl = resolveImageUrl(complaint.image || complaint.user?.avatar)
+          const imageUrl = getImageUrl(complaint.image || complaint.user?.avatar)
 
           if (imageUrl) {
             return <CustomAvatar src={imageUrl} size={40} alt={complaint.user?.name || 'User'} variant='rounded' />

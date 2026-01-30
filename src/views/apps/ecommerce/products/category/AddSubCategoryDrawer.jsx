@@ -21,7 +21,7 @@ import CustomTextField from '@core/components/mui/TextField'
 // Service Imports
 import { createSubCategory, updateSubCategory } from '@/services/subCategoryService'
 import { getAllCategories } from '@/services/categoryService'
-import { getApiBase } from '@/utils/getApiBase'
+import { getImageUrl } from '@/utils/imageUrl'
 
 const AddSubCategoryDrawer = props => {
   // Props
@@ -73,15 +73,7 @@ const AddSubCategoryDrawer = props => {
         category: subCategoryData.category || ''
       })
       if (subCategoryData.image) {
-          const rawImage = subCategoryData.image
-          const base = getApiBase()
-          let imageUrl = ''
-          if (rawImage.startsWith('http')) {
-              imageUrl = rawImage
-          } else {
-              imageUrl = `${base.replace('/admin', '')}/${rawImage.replace(/\\/g, '/')}`
-          }
-          setImagePreview(imageUrl)
+          setImagePreview(getImageUrl(subCategoryData.image))
           setFileName('Existing Image')
       }
     } else {

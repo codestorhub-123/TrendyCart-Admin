@@ -33,7 +33,8 @@ import AddAttributeDialog from './AddAttributeDialog'
 // Service Imports
 import { listAllAttributes, destroyAttribute, insertAttributes, updateAttributes } from '@/services/attributeService'
 import { fetchActiveSubCategories } from '@/services/subCategoryService'
-import { getApiBase } from '@/utils/getApiBase'
+import { getAllCategories } from '@/services/categoryService'
+import { getImageUrl } from '@/utils/imageUrl'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -54,6 +55,7 @@ const AttributeListTable = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [subCategories, setSubCategories] = useState([])
+  const [categories, setCategories] = useState([])
   const [subCategoryId, setSubCategoryId] = useState('')
   const [fieldType, setFieldType] = useState('')
   const [pagination, setPagination] = useState({
@@ -100,9 +102,21 @@ const AttributeListTable = () => {
     }
   }
 
+  const fetchCategories = async () => {
+    try {
+      const res = await getAllCategories()
+      if (res && res.status) {
+        setCategories(res.category || [])
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
+
   useEffect(() => {
     fetchData()
     fetchSubCategories()
+    fetchCategories()
   }, [])
 
   useEffect(() => {
@@ -157,20 +171,7 @@ const AttributeListTable = () => {
         header: 'IMAGE',
         cell: ({ row }) => {
           const rawImage = row.original.image
-          const base = getApiBase()
-          let imageUrl = null
-          
-          if (rawImage) {
-            if (rawImage.startsWith('http')) {
-               imageUrl = rawImage
-            } else {
-               const cleanBase = base.replace('/admin', '')
-               const cleanPath = rawImage.replace(/\\/g, '/')
-               imageUrl = `${cleanBase}/${cleanPath}`
-            }
-          }
-          // console.log('Image Debug:', { rawImage, base, imageUrl })
-          return <CustomAvatar src={imageUrl} size={34} variant='rounded' />
+          return <CustomAvatar src={getImageUrl(rawImage)} size={34} variant='rounded' />
         }
       }),
       columnHelper.accessor('name', {
@@ -258,7 +259,7 @@ const AttributeListTable = () => {
             const catName = typeof sub.category === 'object' ? sub.category?.name : sub.category
             return (
               <MenuItem key={id} value={id}>
-                {catName ? `${sub.name}` : sub.name}
+                {sub.name}
               </MenuItem>
             )
           })}
@@ -347,6 +348,7 @@ const AttributeListTable = () => {
         onSubmit={handleDialogSubmit}
         attributeData={selectedAttribute}
         subCategories={subCategories}
+        categoriesData={categories}
       />
     </Card>
   )

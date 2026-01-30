@@ -1,14 +1,4 @@
-import { getApiBase } from '@/utils/getApiBase'
-
-const getHeaders = () => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token')
-    return {
-      Authorization: `Bearer ${token}`
-    }
-  }
-  return {}
-}
+import { getApiBase, getHeaders } from '@/utils/getApiBase'
 
 // Send notification to a specific seller
 export const sendNotificationToSeller = async (formData) => {

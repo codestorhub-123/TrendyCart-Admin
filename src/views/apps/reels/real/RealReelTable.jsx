@@ -17,6 +17,7 @@ import {
 
 import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@components/TablePaginationComponent'
+import { getImageUrl } from '@/utils/imageUrl'
 
 import { getRealReels, deleteReel } from '@/services/reelService'
 import { format } from 'date-fns'
@@ -101,7 +102,7 @@ const RealReelTable = () => {
             return (
                 <div className="w-[50px] h-[50px] flex items-center justify-center bg-gray-100 rounded overflow-hidden">
                      {thumbnail ? (
-                        <img src={thumbnail} alt="thumbnail" className="w-full h-full object-cover" />
+                        <img src={getImageUrl(thumbnail)} alt="thumbnail" className="w-full h-full object-cover" />
                     ) : (
                          <i className="tabler-video text-xl text-gray-400" />
                     )}

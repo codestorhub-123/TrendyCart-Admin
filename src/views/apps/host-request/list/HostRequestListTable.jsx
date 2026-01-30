@@ -20,9 +20,9 @@ import { fetchHostRequests, updateHostRequestStatus, fetchAgencies } from '@/ser
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
+import { getImageUrl } from '@/utils/imageUrl'
 
-// API Base URL
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080'
+
 
 const HostRequestListTable = () => {
   // States
@@ -170,15 +170,7 @@ const HostRequestListTable = () => {
   // Filter requests
   const filteredRequests = requests.filter(r => r.hostStatus === filter)
 
-  // Get image URL
-  const getImageUrl = imagePath => {
-    if (!imagePath) return null
-    if (imagePath.startsWith('http')) return imagePath
-    // Remove /api/v1 if present for static files
-    let baseUrl = API_BASE.replace(/\/api\/v1\/?$/, '').replace(/\/+$/, '')
-    const cleanPath = imagePath.replace(/^\/+/, '')
-    return `${baseUrl}/${cleanPath}`
-  }
+
 
   return (
     <>

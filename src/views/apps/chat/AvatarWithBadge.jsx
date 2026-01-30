@@ -11,6 +11,7 @@ import CustomAvatar from '@core/components/mui/Avatar'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 
 const BadgeContentSpan = styled('span', {
   name: 'MuiBadgeContentSpan'
@@ -35,7 +36,13 @@ const AvatarWithBadge = props => {
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
     >
       {src ? (
-        <Avatar ref={ref} alt={alt} src={src} onClick={onClick} className={classnames('cursor-pointer', className)} />
+        <Avatar
+          ref={ref}
+          alt={alt}
+          src={getImageUrl(src)}
+          onClick={onClick}
+          className={classnames('cursor-pointer', className)}
+        />
       ) : (
         <CustomAvatar
           ref={ref}

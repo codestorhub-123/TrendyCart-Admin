@@ -29,6 +29,7 @@ import TablePaginationComponent from '@components/TablePaginationComponent'
 import { getFakeSeller, toggleLiveOrNot, deleteSeller, createFakeSeller, updateFakeSellerProfile } from '@/services/sellerService'
 import { getProductsBySeller } from '@/services/productService'
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import tableStyles from '@core/styles/table.module.css'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -290,7 +291,7 @@ const FakeSellerTable = () => {
           return (
             <div className='flex items-center gap-3'>
               <CustomAvatar
-                src={row.original.image || undefined}
+                src={getImageUrl(row.original.image)}
                 alt={name}
                 variant='rounded'
                 skin='light'
@@ -606,7 +607,7 @@ const FakeSellerTable = () => {
           <div className='flex justify-center bg-black rounded overflow-hidden'>
             {activeVideo && (
               <video 
-                src={activeVideo} 
+                src={getImageUrl(activeVideo)} 
                 className='max-w-full' 
                 controls 
                 autoPlay 

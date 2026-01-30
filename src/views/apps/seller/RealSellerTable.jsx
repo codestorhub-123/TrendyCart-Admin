@@ -30,6 +30,7 @@ import TablePaginationComponent from '@components/TablePaginationComponent'
 import { getRealSeller, blockUnblockSeller, updateSellerProfile, getProfileByAdmin } from '@/services/sellerService'
 import { sendNotificationToSeller } from '@/services/notificationService'
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import tableStyles from '@core/styles/table.module.css'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -428,7 +429,7 @@ const RealSellerTable = () => {
           return (
             <div className='flex items-center gap-3'>
               <CustomAvatar
-                src={row.original.image}
+                src={getImageUrl(row.original.image)}
                 alt={name}
                 variant='rounded'
                 size={34}

@@ -21,6 +21,7 @@ import Rating from '@mui/material/Rating'
 import CustomAvatar from '@core/components/mui/Avatar'
 import OptionMenu from '@core/components/option-menu'
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 
 // Service Imports
 import { 
@@ -102,7 +103,7 @@ const TopProductsSellersTabs = () => {
             onClick={() => productId && router.push(`/${locale}/apps/ecommerce/products/detail/${productId}`)}
           >
             <CustomAvatar 
-              src={productImage} 
+              src={getImageUrl(productImage)} 
               size={34} 
               variant='rounded'
               skin={productImage ? 'filled' : 'light'}
@@ -154,7 +155,7 @@ const TopProductsSellersTabs = () => {
             onClick={() => router.push(`/${locale}/apps/user/view/${user._id || user.id || row.userId}`)}
           >
             <CustomAvatar 
-              src={user.image || user.avatar} 
+              src={getImageUrl(user.image || user.avatar)} 
               size={34} 
               variant='rounded'
               skin={user.image || user.avatar ? 'filled' : 'light'}

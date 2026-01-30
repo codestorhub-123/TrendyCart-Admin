@@ -34,6 +34,7 @@ import Badge from '@mui/material/Badge'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import { getLiveSellerList } from '@/services/liveSellerService'
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import tableStyles from '@core/styles/table.module.css'
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -110,7 +111,7 @@ const LiveSellerTable = () => {
                
               >
                 <CustomAvatar
-                  src={row.original.image}
+                  src={getImageUrl(row.original.image)}
                   alt={name}
                   variant='rounded'
                   size={34}

@@ -38,7 +38,8 @@ import CustomAvatar from '@core/components/mui/Avatar' // Added for Image
 
 // Service Imports
 import { getAllCategories, deleteCategory } from '@/services/categoryService'
-import { getApiBase } from '@/utils/getApiBase'
+import { getImageUrl } from '@/utils/imageUrl'
+import { getInitials } from '@/utils/getInitials'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -154,20 +155,17 @@ const ProductCategoryTable = () => {
         header: 'IMAGE',
         cell: ({ row }) => {
             const rawImage = row.original.image
-            const base = getApiBase()
-            let imageUrl = null
-            
-            if (rawImage) {
-              if (rawImage.startsWith('http')) {
-                 imageUrl = rawImage
-              } else {
-                 const cleanBase = base.replace('/admin', '')
-                 const cleanPath = rawImage.replace(/\\/g, '/')
-                 imageUrl = `${cleanBase}/${cleanPath}`
-              }
-            }
-
-            return <CustomAvatar src={imageUrl} size={34} variant="rounded" />
+            return (
+                <CustomAvatar 
+                    src={getImageUrl(rawImage)} 
+                    size={34} 
+                    variant="rounded"
+                    skin='light'
+                    color='primary'
+                >
+                    {getInitials(row.original.name || '-')}
+                </CustomAvatar>
+            )
         }
       }),
       columnHelper.accessor('name', {

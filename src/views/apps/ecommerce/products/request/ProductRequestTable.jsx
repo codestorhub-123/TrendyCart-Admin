@@ -6,7 +6,6 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import Chip from '@mui/material/Chip'
-import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import {
@@ -30,7 +29,9 @@ import {
   getProductRequestsByStatus,
   acceptOrRejectRequest
 } from '@/services/productRequestService'
-import { getApiBase } from '@/utils/getApiBase'
+import { getImageUrl } from '@/utils/imageUrl'
+import { getInitials } from '@/utils/getInitials'
+import CustomAvatar from '@core/components/mui/Avatar'
 import tableStyles from '@core/styles/table.module.css'
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -131,11 +132,18 @@ const ProductRequestTable = ({ status }) => {
         header: 'PRODUCT',
         enableGlobalFilter: true,
         cell: ({ row }) => {
-          const imageUrl = row.original.mainImage || '/images/placeholder.png'
-          
           return (
             <div className='flex items-center gap-3'>
-              <Avatar src={imageUrl} alt={row.original.productName || 'Product'} variant='rounded' />
+              <CustomAvatar
+                src={getImageUrl(row.original.mainImage)}
+                alt={row.original.productName || 'Product'}
+                variant='rounded'
+                skin='light'
+                color='primary'
+                size={34}
+              >
+                {getInitials(row.original.productName || 'Product')}
+              </CustomAvatar>
               <Typography className='font-medium'>{row.original.productName || '-'}</Typography>
             </div>
           )
@@ -145,6 +153,23 @@ const ProductRequestTable = ({ status }) => {
         header: 'PRODUCT CODE',
         enableGlobalFilter: true,
         cell: ({ row }) => <Typography>{row.original.productCode || '-'}</Typography>
+      }),
+      columnHelper.accessor('seller', {
+        header: 'SELLER',
+        cell: ({ row }) => {
+          const seller = row.original.seller
+          if (!seller) return '-'
+          return (
+            <div className='flex flex-col'>
+              <Typography variant='body2' className='font-medium text-primary'>
+                {typeof seller === 'object' ? (seller.businessName || `${seller.firstName || ''} ${seller.lastName || ''}`.trim()) : seller}
+              </Typography>
+              {typeof seller === 'object' && seller.businessTag && (
+                <Typography variant='caption'>{seller.businessTag}</Typography>
+              )}
+            </div>
+          )
+        }
       }),
       columnHelper.accessor('price', {
         header: `PRICE (${currency})`,

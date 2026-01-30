@@ -14,6 +14,12 @@ const nextConfig = {
         hostname: 'localhost',
         port: '8787',
         pathname: '/**'
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**'
       }
     ]
   },
@@ -45,7 +51,7 @@ const nextConfig = {
         locale: false
       },
       {
-        source: '/((?!(?:en|fr|ar|front-pages|favicon.ico|icon.png|logo.png|trendy-card-logo.png|manifest.json|_next|api)\\b)):path',
+        source: '/((?!(?:en|fr|ar|front-pages|favicon.ico|icon.png|logo.png|trendy-card-logo.png|manifest.json|_next|api|storage)\\b)):path',
         destination: '/en/:path',
         permanent: true,
         locale: false

@@ -11,6 +11,9 @@ import EditUserInfo from '@components/dialogs/edit-user-info'
 import ConfirmationDialog from '@components/dialogs/confirmation-dialog'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 import CustomAvatar from '@core/components/mui/Avatar'
+ 
+// Util Imports
+import { getImageUrl } from '@/utils/imageUrl'
 
 
 
@@ -29,7 +32,7 @@ const UserDetails = ({ userData }) => {
           <div className='flex flex-col gap-6'>
             <div className='flex items-center justify-center flex-col gap-4'>
               <div className='flex flex-col items-center gap-4'>
-                <CustomAvatar alt='user-profile' src={userData?.image || '/images/avatars/1.png'} variant='rounded' size={120} />
+                <CustomAvatar alt='user-profile' src={getImageUrl(userData?.image) || '/images/avatars/1.png'} variant='rounded' size={120} />
                 <Typography variant='h5'>{userData?.name || userData?.fullName || `${userData?.firstName || ''} ${userData?.lastName || ''}`}</Typography>
               </div>
               <Chip label={userData?.role || 'User'} color='secondary' size='small' variant='tonal' />

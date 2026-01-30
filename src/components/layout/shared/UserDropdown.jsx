@@ -17,6 +17,7 @@ import { signOut, useSession } from 'next-auth/react'
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
 import { getProfile } from '@/services/adminService'
+import { getImageUrl } from '@/utils/imageUrl'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -42,10 +43,17 @@ const UserDropdown = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      const res = await getProfile()
-      if (res && res.status) {
-        const data = res.data || res.admin || res.user || {}
-        setProfileImage(data.image || '')
+      const token = localStorage.getItem('token')
+      if (!token || token === 'undefined' || token === 'null') return
+
+      try {
+        const res = await getProfile()
+        if (res && res.status) {
+          const data = res.data || res.admin || res.user || {}
+          setProfileImage(data.image || '')
+        }
+      } catch (error) {
+        console.error('UserDropdown: failed to fetch profile', error)
       }
     }
 
@@ -87,7 +95,7 @@ const UserDropdown = () => {
         <Avatar
           ref={anchorRef}
           alt={session?.user?.name || 'Admin'}
-          src={profileImage || session?.user?.image || '/images/avatars/1.png'}
+          src={getImageUrl(profileImage) || session?.user?.image || '/images/avatars/1.png'}
           onClick={handleProfileNavigation}
           className='cursor-pointer bs-[38px] is-[38px]'
         />

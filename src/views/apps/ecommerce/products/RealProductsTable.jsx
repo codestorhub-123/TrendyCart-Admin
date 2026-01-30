@@ -11,6 +11,7 @@ import Chip from '@mui/material/Chip'
 import Avatar from '@mui/material/Avatar'
 import CustomAvatar from '@core/components/mui/Avatar'
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import Switch from '@mui/material/Switch'
 import Tooltip from '@mui/material/Tooltip'
 import TablePagination from '@mui/material/TablePagination'
@@ -290,7 +291,7 @@ const RealProductsTable = () => {
           return (
             <div className='flex items-center gap-3'>
               <CustomAvatar
-                src={row.original.mainImage}
+                src={getImageUrl(row.original.mainImage)}
                 alt={row.original.productName || 'Product'}
                 variant='rounded'
                 skin='light'
@@ -615,7 +616,7 @@ const RealProductsTable = () => {
               )}
               {editProduct?.mainImage && !editFormData.mainImage && (
                 <div style={{ marginTop: '8px' }}>
-                  <img src={editProduct.mainImage} alt='Current' style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                  <img src={getImageUrl(editProduct.mainImage)} alt='Current' style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                 </div>
               )}
             </Grid>

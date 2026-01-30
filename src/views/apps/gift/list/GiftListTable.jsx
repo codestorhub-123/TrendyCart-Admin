@@ -39,6 +39,7 @@ import {
 // Component Imports
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
+import { getImageUrl } from '@/utils/imageUrl'
 import GiftDialog from '@/components/dialogs/gift'
 
 // Service Imports
@@ -90,8 +91,7 @@ const GiftListTable = () => {
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
 
-  // API Base URL - use same as reference code
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8081'
+
 
   // Load gifts and categories function
   const loadGifts = async () => {
@@ -164,22 +164,7 @@ const GiftListTable = () => {
     setGiftDialogOpen(true)
   }
 
-  // Get gift image - normalize backslashes to forward slashes
-  const getGiftImage = image => {
-    if (!image) return null
-    if (image.startsWith('http')) return image
 
-    // Normalize image path - convert backslashes to forward slashes
-    const normalizedImage = image.replace(/\\/g, '/')
-
-    // Get base URL - use API_BASE directly like reference code
-    const baseUrl = API_BASE || process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8081'
-
-    // Construct URL exactly like reference: baseUrl/uploads/filename.gif
-    const fullUrl = `${baseUrl}/${normalizedImage}`
-
-    return fullUrl
-  }
 
   const columns = useMemo(
     () => [
@@ -209,7 +194,7 @@ const GiftListTable = () => {
         header: 'Image',
         cell: ({ row }) => {
           const image = row.original.image
-          const imageUrl = getGiftImage(image)
+          const imageUrl = getImageUrl(image)
 
           // Render exactly like reference code
           return (

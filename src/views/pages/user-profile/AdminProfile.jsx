@@ -11,6 +11,7 @@ import CustomTextField from '@core/components/mui/TextField'
 import { toast } from 'react-hot-toast'
 
 import { getProfile, updateProfile, updateImage, updatePassword } from '@/services/adminService'
+import { getImageUrl } from '@/utils/imageUrl'
 
 const AdminProfile = () => {
     const [profileData, setProfileData] = useState({
@@ -160,7 +161,7 @@ const AdminProfile = () => {
                         <CardContent className='flex flex-col items-center gap-6'>
                             <div className='w-32 h-32 rounded-full border overflow-hidden relative'>
                                 <img 
-                                    src={previewImage || profileData.image || '/images/avatars/1.png'} 
+                                    src={previewImage || getImageUrl(profileData.image) || '/images/avatars/1.png'} 
                                     alt="Profile" 
                                     className='w-full h-full object-cover'
                                 />

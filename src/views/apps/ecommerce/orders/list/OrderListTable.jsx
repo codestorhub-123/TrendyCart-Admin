@@ -51,6 +51,7 @@ import { getOrders, updateOrder } from '@/services/orderService'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
@@ -122,6 +123,11 @@ const OrderListTable = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [updateLoading, setUpdateLoading] = useState(false)
   const [newStatus, setNewStatus] = useState('')
+  const [trackingInfo, setTrackingInfo] = useState({
+    deliveredServiceName: '',
+    trackingId: '',
+    trackingLink: ''
+  })
 
   // Hooks
   const { lang: locale } = useParams()
@@ -135,7 +141,12 @@ const OrderListTable = () => {
         const flattenedData = (res.data || []).flatMap((order, orderIndex) => {
           return (order.items || []).map(item => ({
             ...order,
-            itemData: item,
+            itemData: {
+              ...item,
+              deliveredServiceName: item.deliveredServiceName || '',
+              trackingId: item.trackingId || '',
+              trackingLink: item.trackingLink || ''
+            },
             orderRowIndex: (pagination.pageIndex * pagination.pageSize) + orderIndex + 1
           }))
         })
@@ -152,6 +163,11 @@ const OrderListTable = () => {
   const handleEdit = (row) => {
     setSelectedOrder(row)
     setNewStatus(row.itemData?.status || row.status || 'Pending')
+    setTrackingInfo({
+      deliveredServiceName: row.itemData?.deliveredServiceName || '',
+      trackingId: row.itemData?.trackingId || '',
+      trackingLink: row.itemData?.trackingLink || ''
+    })
     setEditDialogOpen(true)
   }
 
@@ -163,7 +179,10 @@ const OrderListTable = () => {
       const res = await updateOrder({
         orderId: selectedOrder._id,
         itemId: selectedOrder.itemData?._id,
-        status: newStatus
+        status: newStatus,
+        deliveredServiceName: trackingInfo.deliveredServiceName,
+        trackingId: trackingInfo.trackingId,
+        trackingLink: trackingInfo.trackingLink
       })
 
       if (res.status) {
@@ -250,7 +269,7 @@ const OrderListTable = () => {
           return (
             <div className='flex items-center gap-3'>
               <CustomAvatar
-                src={item?.productId?.mainImage}
+                src={getImageUrl(item?.productId?.mainImage)}
                 alt={item?.productId?.productName}
                 variant='rounded'
                 skin='light'
@@ -409,7 +428,7 @@ const OrderListTable = () => {
     const { avatar, customer } = params
 
     if (avatar) {
-      return <CustomAvatar src={avatar} skin='light' size={34} />
+      return <CustomAvatar src={getImageUrl(avatar)} skin='light' size={34} />
     } else {
       return (
         <CustomAvatar skin='light' size={34}>
@@ -550,6 +569,29 @@ const OrderListTable = () => {
               <MenuItem value='Delivered'>Delivered</MenuItem>
               <MenuItem value='Cancelled'>Cancelled</MenuItem>
             </CustomTextField>
+            <div className='flex flex-col gap-4 mt-4'>
+              <CustomTextField
+                fullWidth
+                label='Service Name'
+                placeholder='e.g. FedEx'
+                value={trackingInfo.deliveredServiceName}
+                onChange={e => setTrackingInfo(prev => ({ ...prev, deliveredServiceName: e.target.value }))}
+              />
+              <CustomTextField
+                fullWidth
+                label='Tracking ID'
+                placeholder='Enter tracking ID'
+                value={trackingInfo.trackingId}
+                onChange={e => setTrackingInfo(prev => ({ ...prev, trackingId: e.target.value }))}
+              />
+              <CustomTextField
+                fullWidth
+                label='Tracking Link'
+                placeholder='Enter tracking URL'
+                value={trackingInfo.trackingLink}
+                onChange={e => setTrackingInfo(prev => ({ ...prev, trackingLink: e.target.value }))}
+              />
+            </div>
           </div>
         </DialogContent>
         <DialogActions className='justify-end pli-6 pbe-6'>

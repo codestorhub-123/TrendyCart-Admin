@@ -28,6 +28,7 @@ import CustomAvatar from '@core/components/mui/Avatar'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import { listWithdrawalRequests, approveWithdrawalRequest, rejectWithdrawalRequest } from '@/services/withdrawRequestService'
 import { getInitials } from '@/utils/getInitials'
+import { getImageUrl } from '@/utils/imageUrl'
 import tableStyles from '@core/styles/table.module.css'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -189,7 +190,7 @@ const WithdrawalTable = () => {
           return (
             <div className='flex items-center gap-3'>
               <CustomAvatar
-                src={seller.image || undefined}
+                src={getImageUrl(seller.image)}
                 alt={name}
                 variant='rounded'
                 skin='light'
@@ -221,8 +222,8 @@ const WithdrawalTable = () => {
       columnHelper.accessor('date', {
         header: statusType === '1' ? 'REQUESTED DATE' : (statusType === '2' ? 'ACCEPTED DATE' : 'REJECTED DATE'),
         cell: ({ row }) => {
-            const date = statusType === '1' ? row.original.createdAt : (statusType === '2' ? row.original.acceptOrDeclineDate : row.original.acceptOrDeclineDate)
-            return <Typography>{date ? moment(date).format('DD MMM YYYY') : '-'}</Typography>
+            const dateStr = statusType === '1' ? row.original.createdAt : row.original.acceptOrDeclineDate
+            return <Typography>{dateStr ? moment(dateStr).format('DD MMM YYYY') : '-'}</Typography>
         },
         size: 150
       }),
@@ -281,6 +282,7 @@ const WithdrawalTable = () => {
               startDate={startDate}
               id='date-range-picker'
               placeholderText='Select Date'
+              dateFormat='dd MMM yyyy'
               onChange={(dates) => {
                 const [start, end] = dates
                 setStartDate(start)
