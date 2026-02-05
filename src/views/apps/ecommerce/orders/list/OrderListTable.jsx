@@ -283,7 +283,7 @@ const OrderListTable = () => {
                   {item?.productId?.productName || 'Unnamed'}
                 </Typography>
                 <Typography variant='caption' className='text-textSecondary'>
-                  Quantity: {item?.totalQuantity || item?.itemQuantity || 0}
+                  Quantity: {item?.productQuantity || item?.quantity || item?.totalQuantity || item?.itemQuantity || row.original.totalQuantity || 0}
                 </Typography>
                 <Typography variant='caption' className='text-textSecondary'>
                   Price: {item?.purchasedTimeProductPrice || 0}

@@ -136,11 +136,17 @@ const OrderTable = ({ data, currency }) => {
       }),
       columnHelper.accessor('totalQuantity', {
         header: 'Qty',
-        cell: ({ row }) => <Typography>{`${row.original.productQuantity}`}</Typography>
+        cell: ({ row }) => {
+          const qty = row.original.productQuantity || row.original.quantity || row.original.totalQuantity || row.original.itemQuantity || 0
+          return <Typography>{`${qty}`}</Typography>
+        }
       }),
       columnHelper.accessor('totalPrice', {
         header: 'Total',
-        cell: ({ row }) => <Typography>{`${currency}${row.original.productQuantity * row.original.purchasedTimeProductPrice}`}</Typography>
+        cell: ({ row }) => {
+          const qty = row.original.productQuantity || row.original.quantity || row.original.totalQuantity || row.original.itemQuantity || 0
+          return <Typography>{`${currency}${qty * (row.original.purchasedTimeProductPrice || 0)}`}</Typography>
+        }
       })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
