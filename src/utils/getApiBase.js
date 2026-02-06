@@ -26,43 +26,19 @@ export function getApiBase() {
 }
 
 export function getStorageBase() {
-  const apiBase = getApiBase()
-
-  // -------------------------
-  // ✔ Local Development
-  // -------------------------
-  // Use the API's origin for storage in local development (usually port 8787)
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname
     if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '192.168.1.18') {
-      try {
-        const url = new URL(apiBase)
-        
-        return url.origin
-      } catch (error) {
-        return 'http://localhost:8787'
-      }
-    }
-  } else if (process.env.NODE_ENV === 'development') {
-    try {
-      const url = new URL(apiBase)
-      
-      return url.origin
-    } catch (error) {
       return 'http://localhost:8787'
     }
-  }
-
-  // -------------------------
-  // ✔ Production / Fallback
-  // -------------------------
-  
-  try {
-    const url = new URL(apiBase)
-    return url.origin
-  } catch (error) {
     return 'https://trendycart.codestorehub.cloud'
   }
+
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:8787'
+  }
+
+  return 'https://trendycart.codestorehub.cloud'
 }
 
 export const getHeaders = () => {

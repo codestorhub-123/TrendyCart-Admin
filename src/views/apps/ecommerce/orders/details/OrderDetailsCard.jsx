@@ -31,14 +31,8 @@ import { useSelector } from 'react-redux'
 import Link from '@components/Link'
 
 // Util Imports
-import { getStorageBase } from '@/utils/getApiBase'
-
-// Helper function for Image URL
-const getImageUrl = (path) => {
-    if (!path) return '/images/avatars/1.png'
-    if (path.startsWith('http')) return path
-    return `${getStorageBase()}${path}`
-}
+// Util Imports
+import { getImageUrl } from '@/utils/imageUrl'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
