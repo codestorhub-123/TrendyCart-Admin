@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 // Component Imports
 import CustomAvatar from '@core/components/mui/Avatar'
 
+
 const FaqFooter = () => {
   return (
     <>
