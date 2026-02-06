@@ -30,6 +30,16 @@ import { useSelector } from 'react-redux'
 // Component Imports
 import Link from '@components/Link'
 
+// Util Imports
+import { getStorageBase } from '@/utils/getApiBase'
+
+// Helper function for Image URL
+const getImageUrl = (path) => {
+    if (!path) return '/images/avatars/1.png'
+    if (path.startsWith('http')) return path
+    return `${getStorageBase()}${path}`
+}
+
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 
@@ -119,7 +129,7 @@ const OrderTable = ({ data, currency }) => {
           const product = row.original.productId
           return (
             <div className='flex items-center gap-3'>
-              <img src={product?.mainImage || '/images/avatars/1.png'} alt={product?.productName} height={34} className='rounded' />
+              <img src={getImageUrl(product?.mainImage)} alt={product?.productName} height={34} className='rounded' />
               <div className='flex flex-col items-start'>
                 <Typography color='text.primary' className='font-medium'>
                   {product?.productName || 'Unnamed Product'}

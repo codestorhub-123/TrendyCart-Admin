@@ -56,25 +56,12 @@ export function getStorageBase() {
   // -------------------------
   // ✔ Production / Fallback
   // -------------------------
+  
   try {
     const url = new URL(apiBase)
-    
     return url.origin
   } catch (error) {
-    // Fallback if URL parsing fails.
-    let cleaned = apiBase.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '')
-    
-    // Ensure it has a protocol
-    if (!cleaned.startsWith('http://') && !cleaned.startsWith('https://')) {
-      cleaned = `http://${cleaned}`
-    }
-
-    try {
-      const url = new URL(cleaned)
-      return url.origin
-    } catch (fallbackError) {
-      return 'https://trendycart.codestorehub.cloud' // Production safe fallback
-    }
+    return 'https://trendycart.codestorehub.cloud'
   }
 }
 
