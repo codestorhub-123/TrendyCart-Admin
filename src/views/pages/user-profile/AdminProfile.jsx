@@ -81,6 +81,7 @@ const AdminProfile = () => {
             username: profileData.username,
             email: profileData.email
         })
+
         if (res && res.status === true) {
             toast.success(res.message || 'Profile updated successfully')
         } else {
@@ -119,14 +120,17 @@ const AdminProfile = () => {
     const handleUpdatePassword = async () => {
         if (!passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmNewPassword) {
             toast.error('All password fields are required')
+
             return
         }
         if (passwordData.newPassword !== passwordData.confirmNewPassword) {
             toast.error('New passwords do not match')
+
             return
         }
         if (passwordData.newPassword.length < 6) {
              toast.error('Password must be at least 6 characters')
+
              return
         }
 

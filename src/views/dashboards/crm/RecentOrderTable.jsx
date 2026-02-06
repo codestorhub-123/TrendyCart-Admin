@@ -9,16 +9,11 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 
+// Next Imports
+import { useParams, useRouter } from 'next/navigation'
+
 // Third-party Imports
 import { useSelector } from 'react-redux'
-
-// Component Imports
-import OptionMenu from '@core/components/option-menu'
-
-// Service Imports
-import { getRecentOrders } from '@/services/dashboardService'
-
-import { useParams, useRouter } from 'next/navigation'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -36,6 +31,7 @@ const RecentOrderTable = () => {
     setLoading(true)
     try {
       const res = await getRecentOrders()
+
       if (res && (res.status === true || res.success)) {
         setData(res.orders || [])
       }

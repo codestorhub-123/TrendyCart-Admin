@@ -49,7 +49,9 @@ const DashboardPage = () => {
     try {
       setLoading(true)
       const data = await fetchDashboardData(startDateParam, endDateParam)
+
       console.log('Dashboard data received:', data)
+
       if (data) {
         setDashboardData(data)
       }
@@ -74,6 +76,7 @@ const DashboardPage = () => {
     switch (value) {
       case 'all':
         getDashboard('all', 'all')
+
         return
       case 'today':
         start = startOfDay(new Date())
@@ -116,7 +119,6 @@ const DashboardPage = () => {
     const userObj = users.find(u => u._id === date)
     const hostObj = hosts.find(h => h._id === date)
     mergedChartData.push({
-      date,
       totalUsers: userObj ? userObj.count : 0,
       totalHosts: hostObj ? hostObj.count : 0
     })

@@ -47,32 +47,34 @@ const RevenueAnalyticsChart = () => {
     return `${day}-${month}-${year}`
   }
 
-  const fetchData = async () => {
-    setLoading(true)
-    try {
-      // Default to last 30 days
-      const endDate = getFormattedDate(new Date())
-      const startDate = getFormattedDate(new Date(new Date().setDate(new Date().getDate() - 30)))
-      
-      const res = await getRevenueAnalytics(startDate, endDate)
-      if (res && res.status) {
-        const fetchedData = res.revenueAnalyticsChartData || res.revenueAnalytics || res.data || []
-        
-        // Adjust mapping based on actual API response structure
-        const chartData = fetchedData.map(item => item.revenue || item.totalAmount || item.total || item.count || 0)
-        const labels = fetchedData.map(item => item._id || item.date || '')
-        
-        setSeries([{ name: 'Revenue', data: chartData }])
-        setCategories(labels)
-      }
-    } catch (error) {
-      console.error('Error fetching revenue analytics:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+
+      try {
+        // Default to last 30 days
+        const endDate = getFormattedDate(new Date())
+        const startDate = getFormattedDate(new Date(new Date().setDate(new Date().getDate() - 30)))
+
+        const res = await getRevenueAnalytics(startDate, endDate)
+
+        if (res && res.status) {
+          const fetchedData = res.revenueAnalyticsChartData || res.revenueAnalytics || res.data || []
+
+          // Adjust mapping based on actual API response structure
+          const chartData = fetchedData.map(item => item.revenue || item.totalAmount || item.total || item.count || 0)
+          const labels = fetchedData.map(item => item._id || item.date || '')
+
+          setSeries([{ name: 'Revenue', data: chartData }])
+          setCategories(labels)
+        }
+      } catch (error) {
+        console.error('Error fetching revenue analytics:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchData()
   }, [])
 

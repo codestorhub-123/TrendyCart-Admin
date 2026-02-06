@@ -65,6 +65,7 @@ const TopProductsSellersTabs = () => {
           res.sellers || 
           res.customers || 
           []
+
         setData(fetchedData)
       } else {
         setData([])

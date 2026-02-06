@@ -21,6 +21,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { email, object, minLength, string, pipe, nonEmpty } from 'valibot'
 import classnames from 'classnames'
+import { toast } from 'react-hot-toast'
 
 // Component Imports
 import Logo from '@components/layout/shared/Logo'
@@ -35,7 +36,7 @@ import { useSettings } from '@core/hooks/useSettings'
 
 
 // Toast Imports
-import { toast } from 'react-hot-toast'
+// deleted toast import from here
 
 // Service Imports
 import { login } from '@/services/login'

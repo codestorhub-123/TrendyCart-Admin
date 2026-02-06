@@ -40,13 +40,14 @@ const UserAnalyticsChart = () => {
     try {
       // Fetching with 'All' as per user swagger
       const res = await getUserChartAnalytics('All', 'All')
+
       if (res && res.status) {
         const fetchedData = res.chartAnalyticOfUsers || res.data || []
-        
+
         // Mapping based on user provided JSON structure
         const chartData = fetchedData.map(item => item.count || item.users || 0)
         const labels = fetchedData.map(item => item._id || item.date || '')
-        
+
         setSeries([{ name: 'Users', data: chartData }])
         setCategories(labels)
       }

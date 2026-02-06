@@ -14,6 +14,7 @@ import Chip from '@mui/material/Chip'
 
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
+import CustomAvatar from '@core/components/mui/Avatar'
 
 // Vars
 const initialData = {

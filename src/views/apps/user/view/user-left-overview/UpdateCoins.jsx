@@ -35,11 +35,13 @@ const UserPlan = () => {
     const fetchCurrentCoins = async () => {
       if (!userId) {
         setLoadingCurrentCoins(false)
+
         return
       }
 
       try {
         const response = await getUserInfo(userId)
+
         if (response.success && response.data) {
           setCurrentCoins(response.data.coins || 0)
         }
@@ -57,16 +59,19 @@ const UserPlan = () => {
   const handleUpdateCoins = async () => {
     if (!userId) {
       alert('User ID is required')
+
       return
     }
 
     if (!coinsInput || isNaN(coinsInput) || parseFloat(coinsInput) <= 0) {
       alert('Please enter a valid coins amount to add')
+
       return
     }
 
     if (currentCoins === null) {
       alert('Please wait while we fetch current coins...')
+
       return
     }
 
@@ -82,6 +87,7 @@ const UserPlan = () => {
         setCoinsInput('')
         setCurrentCoins(newTotalCoins) // Update current coins display
         alert(`Coins updated successfully! Added ${coinsToAdd} coins. New total: ${newTotalCoins}`)
+
         // Optionally refresh the page or trigger a data refresh
         window.location.reload()
       } else {

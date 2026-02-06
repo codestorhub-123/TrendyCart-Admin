@@ -16,13 +16,6 @@ import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 
-// Component Imports
-import Link from '@components/Link'
-import CustomAvatar from '@core/components/mui/Avatar'
-
-// Util Imports
-import { getLocalizedUrl } from '@/utils/i18n'
-
 // Third-party Imports
 import classnames from 'classnames'
 import {
@@ -34,6 +27,13 @@ import {
   getPaginationRowModel,
   getSortedRowModel
 } from '@tanstack/react-table'
+
+// Component Imports
+import Link from '@components/Link'
+import CustomAvatar from '@core/components/mui/Avatar'
+
+// Util Imports
+import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -54,6 +54,7 @@ const OrderListTable = ({ orderData }) => {
 
   const filteredData = useMemo(() => {
     if (statusFilter === 'All') return data
+
     return data.filter(order => order.items.some(item => (item.status === statusFilter || (statusFilter === 'Pending' && item.status === 0))))
   }, [data, statusFilter])
 
@@ -210,7 +211,7 @@ const OrderListTable = ({ orderData }) => {
         }
       })
     ],
-    [statusFilter]
+    [statusFilter, currency, locale]
   )
 
   const table = useReactTable({

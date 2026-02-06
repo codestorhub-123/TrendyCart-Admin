@@ -23,7 +23,9 @@ const DashboardStats = () => {
       try {
         setLoading(true)
         const data = await fetchDashboardData()
+
         console.log('DashboardStats - Received data:', data)
+
         if (data?.data) {
           setDashboardData(data.data)
         } else if (data) {

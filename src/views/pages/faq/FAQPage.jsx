@@ -48,6 +48,7 @@ const FAQPage = () => {
     const fetchData = async () => {
         setIsLoading(true)
         const res = await getFAQs()
+
         if (res && res.status === true) {
             setFaqs(res.FaQ || [])
         } else {
@@ -87,6 +88,7 @@ const FAQPage = () => {
         try {
             if (editingFaq) {
                 const res = await updateFAQ(editingFaq._id, formData)
+
                 if (res && res.status === true) {
                     toast.success(res.message || 'FAQ updated successfully')
                     fetchData()

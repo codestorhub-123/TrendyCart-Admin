@@ -3,6 +3,9 @@
 // React Imports
 import { useEffect, useState } from 'react'
 
+// Next Imports
+import dynamic from 'next/dynamic'
+
 // MUI Imports
 import Grid from '@mui/material/Grid2'
 import Card from '@mui/material/Card'
@@ -10,9 +13,6 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
-
-// Next Imports
-import dynamic from 'next/dynamic'
 
 // Third-party Imports
 import {
@@ -43,7 +43,9 @@ const DashboardCharts = () => {
       try {
         setLoading(true)
         const data = await fetchDashboardData()
+
         console.log('DashboardCharts - Received data:', data)
+
         if (data?.chart) {
           setChartData(data.chart)
         }
