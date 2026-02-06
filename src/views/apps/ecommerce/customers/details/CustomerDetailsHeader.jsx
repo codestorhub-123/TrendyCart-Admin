@@ -1,3 +1,8 @@
+'use client'
+
+// React Imports
+import { useRouter } from 'next/navigation'
+
 // MUI Imports
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -7,6 +12,9 @@ import ConfirmationDialog from '@components/dialogs/confirmation-dialog'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 
 const CustomerDetailHeader = ({ customerId }) => {
+  // Hooks
+  const router = useRouter()
+
   // Vars
   const buttonProps = (children, color, variant) => ({
     children,
@@ -20,12 +28,21 @@ const CustomerDetailHeader = ({ customerId }) => {
         <Typography variant='h4'>{`Customer ID #${customerId}`}</Typography>
         <Typography>Aug 17, 2020, 5:48 (ET)</Typography>
       </div>
-      <OpenDialogOnElementClick
-        element={Button}
-        elementProps={buttonProps('Delete Customer', 'error', 'tonal')}
-        dialog={ConfirmationDialog}
-        dialogProps={{ type: 'delete-customer' }}
-      />
+      <div className='flex items-center gap-4'>
+        <Button 
+          variant='contained' 
+          onClick={() => router.back()} 
+          startIcon={<i className='tabler-arrow-left' />}
+        >
+          Back
+        </Button>
+        <OpenDialogOnElementClick
+          element={Button}
+          elementProps={buttonProps('Delete Customer', 'error', 'tonal')}
+          dialog={ConfirmationDialog}
+          dialogProps={{ type: 'delete-customer' }}
+        />
+      </div>
     </div>
   )
 }

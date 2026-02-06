@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { getImageUrl } from '@/utils/imageUrl'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -221,7 +222,7 @@ const WithdrawSetting = () => {
                                     <td>{(page * rowsPerPage) + index + 1}</td>
                                     <td>
                                         <div className='h-12 w-12 flex items-center justify-center bg-gray-100 rounded overflow-hidden'>
-                                            <img src={item.image} alt={item.name} className='h-full w-full object-contain' />
+                                            <img src={getImageUrl(item.image)} alt={item.name} className='h-full w-full object-contain' />
                                         </div>
                                     </td>
                                     <td>

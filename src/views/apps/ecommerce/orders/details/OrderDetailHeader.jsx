@@ -1,3 +1,8 @@
+'use client'
+
+// React Imports
+import { useRouter } from 'next/navigation'
+
 // MUI Imports
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
@@ -21,6 +26,9 @@ export const statusChipColor = {
 }
 
 const OrderDetailHeader = ({ orderData, order }) => {
+  // Hooks
+  const router = useRouter()
+
   // Vars
   const buttonProps = (children, color, variant) => ({
     children,
@@ -60,6 +68,13 @@ const OrderDetailHeader = ({ orderData, order }) => {
           })()}
         </Typography>
       </div>
+      <Button 
+        variant='contained' 
+        onClick={() => router.back()} 
+        startIcon={<i className='tabler-arrow-left' />}
+      >
+        Back
+      </Button>
     </div>
   )
 }
