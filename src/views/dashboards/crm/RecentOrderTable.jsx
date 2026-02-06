@@ -15,6 +15,9 @@ import { useParams, useRouter } from 'next/navigation'
 // Third-party Imports
 import { useSelector } from 'react-redux'
 
+// Service Imports
+import { getRecentOrders } from '@/services/dashboardService'
+
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 
