@@ -12,8 +12,9 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 
 // Component Imports
-import { getAdminProfile } from '@/services/userService'
 import { toast } from 'react-toastify'
+
+import { getProfile } from '@/services/adminService'
 
 const MyProfilePage = () => {
   // States
@@ -28,7 +29,7 @@ const MyProfilePage = () => {
   const loadProfile = async () => {
     try {
       setLoading(true)
-      const result = await getAdminProfile()
+      const result = await getProfile()
 
       if (result?.success && result?.data) {
         setProfileData(result.data)

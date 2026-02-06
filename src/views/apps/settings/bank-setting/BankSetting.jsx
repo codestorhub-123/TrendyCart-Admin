@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
@@ -10,11 +11,11 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import CustomTextField from '@core/components/mui/TextField'
+import Pagination from '@mui/material/Pagination'
+
 import { toast } from 'react-hot-toast'
 
-// Table Imports
-import Pagination from '@mui/material/Pagination'
+import CustomTextField from '@core/components/mui/TextField'
 
 import tableStyles from '@core/styles/table.module.css'
 
@@ -34,10 +35,13 @@ const BankSetting = () => {
 
     const fetchData = async () => {
         setIsLoading(true)
+
         const res = await getBanks()
+
         if (res && res.status === true) {
             setData(res.bank || [])
         }
+
         setIsLoading(false)
     }
 
@@ -53,6 +57,7 @@ const BankSetting = () => {
             setEditId(null)
             setFormData({ name: '' })
         }
+
         setOpen(true)
     }
 
@@ -64,8 +69,10 @@ const BankSetting = () => {
     const handleSubmit = async () => {
         if (!formData.name) {
             toast.error('Bank Name is required')
+
             return
         }
+
         setIsSubmitLoading(true)
         
         let res
@@ -82,6 +89,7 @@ const BankSetting = () => {
         } else {
             toast.error(res.message || 'Failed')
         }
+
         setIsSubmitLoading(false)
     }
 

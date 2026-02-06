@@ -1,14 +1,17 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
-import CustomTextField from '@core/components/mui/TextField'
+
 import { toast } from 'react-hot-toast'
+
+import CustomTextField from '@core/components/mui/TextField'
 
 import { getProfile, updateProfile, updateImage, updatePassword } from '@/services/adminService'
 import { getImageUrl } from '@/utils/imageUrl'
@@ -19,6 +22,7 @@ const AdminProfile = () => {
         email: '',
         image: ''
     })
+
     const [passwordData, setPasswordData] = useState({
         oldPassword: '',
         newPassword: '',
@@ -35,15 +39,19 @@ const AdminProfile = () => {
 
     const fetchProfile = async () => {
         setIsLoading(true)
+
         const res = await getProfile()
+
         if (res && res.status === true) {
             const data = res.data || res.admin || res.user || {}
+
             setProfileData({
                 username: data.username || '',
                 email: data.email || '',
                 image: data.image || ''
             })
         }
+
         setIsLoading(false)
     }
 
@@ -123,6 +131,7 @@ const AdminProfile = () => {
         }
 
         setIsPasswordLoading(true)
+
         const res = await updatePassword({
             oldPassword: passwordData.oldPassword,
             newPassword: passwordData.newPassword
@@ -130,6 +139,7 @@ const AdminProfile = () => {
 
         if (res && res.status === true) {
             toast.success(res.message || 'Password updated successfully')
+
             setPasswordData({
                 oldPassword: '',
                 newPassword: '',
@@ -138,6 +148,7 @@ const AdminProfile = () => {
         } else {
             toast.error(res.message || 'Failed to update password')
         }
+
         setIsPasswordLoading(false)
     }
 

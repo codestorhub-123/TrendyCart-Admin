@@ -1,9 +1,7 @@
 'use client'
 
-// React Imports
 import { useEffect, useState } from 'react'
 
-// MUI Imports
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -11,18 +9,15 @@ import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid2'
 
-// Component Imports
+import { toast } from 'react-toastify'
+
 import ToggleCard from './components/ToggleCard'
 import InputCard from './components/InputCard'
 import CoinSettingsCard from './components/CoinSettingsCard'
 import Coin from './components/Coin'
 import WithdrawPayment from './components/WithdrawPayment'
 
-// Service Imports
-import { fetchSettings, updateSettings } from '@/services/userService'
-
-// Toast Imports
-import { toast } from 'react-toastify'
+import { getSetting as fetchSettings, updateSetting as updateSettings } from '@/services/settingService'
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState('settings')
@@ -33,13 +28,17 @@ const SettingsPage = () => {
   const loadSettings = async () => {
     try {
       setLoading(true)
+
       const data = await fetchSettings()
+
       console.log('Fetched settings:', data)
+
       if (data) {
         setSettings(data)
       }
     } catch (err) {
       console.error('Error fetching settings:', err)
+
       toast.error('Failed to load settings')
     } finally {
       setLoading(false)
@@ -52,20 +51,25 @@ const SettingsPage = () => {
       setSettings(prev => ({ ...prev, [key]: value }))
 
       const id = settings._id || settings.id
+
       if (!id) {
         console.warn('Settings ID not found')
+
         toast.error('Settings ID not found')
-        // Reload settings to revert
+        
         loadSettings()
+
         return
       }
 
       await updateSettings(id, { [key]: value })
+
       toast.success('Setting updated successfully')
     } catch (err) {
       console.error('Error updating setting:', err)
+
       toast.error(err.message || 'Failed to update setting')
-      // Reload settings to revert on error
+      
       loadSettings()
     }
   }

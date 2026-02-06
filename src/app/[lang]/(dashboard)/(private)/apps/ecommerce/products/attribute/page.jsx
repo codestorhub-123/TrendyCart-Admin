@@ -1,6 +1,7 @@
 'use client'
 
 import Grid from '@mui/material/Grid'
+
 import AttributeListTable from '@/views/apps/ecommerce/products/attribute/AttributeListTable'
 
 const AttributePage = () => {

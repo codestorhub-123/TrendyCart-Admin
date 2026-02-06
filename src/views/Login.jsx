@@ -34,9 +34,12 @@ import { useImageVariant } from '@core/hooks/useImageVariant'
 import { useSettings } from '@core/hooks/useSettings'
 
 
+// Toast Imports
+import { toast } from 'react-hot-toast'
+
+// Service Imports
 import { login } from '@/services/login'
 import { forgotPassword } from '@/services/adminService'
-import { toast } from 'react-hot-toast'
 
 // Styled Custom Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -134,6 +137,7 @@ const Login = ({ mode }) => {
   const onSubmit = async data => {
     setIsLoading(true)
     setErrorState(null)
+    
     // ... existing login logic ...
     try {
       const { ok, result } = await login(data.email, data.password)
@@ -145,6 +149,7 @@ const Login = ({ mode }) => {
 
         const redirectURL = searchParams.get('redirectTo') ?? themeConfig.homePageUrl
         const currentLocale = locale || 'en'
+        
         const finalUrl = redirectURL.startsWith(`/${currentLocale}`)
           ? redirectURL
           : `/${currentLocale}${redirectURL}`
@@ -162,8 +167,10 @@ const Login = ({ mode }) => {
 
   const onForgotPasswordSubmit = async (data) => {
     setIsLoading(true)
+
     try {
         const res = await forgotPassword(data.email)
+
         if (res.status) {
             toast.success(res.message || 'Temporary password sent to your email')
             setViewMode('login')

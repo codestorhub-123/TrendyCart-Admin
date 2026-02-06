@@ -1,6 +1,7 @@
 'use client'
 
 import Grid from '@mui/material/Grid'
+
 import RealProductsTable from '@/views/apps/ecommerce/products/RealProductsTable'
 
 const RealProductsPage = () => {
