@@ -54,7 +54,7 @@ const AdminEarningTable = () => {
     if (res && res.status === true) {
       setData(res.data || [])
       setTotalHistory(res.total || 0)
-      setTotalEarnings(res.totalAdminEarnings || 0)
+      setTotalEarnings(res.totalEarnings || 0)
     } else {
         setData([])
         setTotalHistory(0)

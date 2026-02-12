@@ -119,9 +119,9 @@ const AppSetting = () => {
         zegoAppId: formData.zegoAppId,
         zegoAppSignIn: formData.zegoAppSignIn,
         cancelOrderCharges: Number(formData.cancelOrderCharges),
-        commissionPercent: Number(formData.adminCommissionCharges),
+        adminCommissionCharges: Number(formData.adminCommissionCharges),
         resendApiKey: formData.resendApiKey,
-        minValueForWithdrawal: Number(formData.minWithdrawalAmount),
+        minPayout: Number(formData.minWithdrawalAmount),
         openAiKey: formData.openAiKey,
         firebaseKey: formData.firebaseKey // Assuming string for now, validation might be needed if backend expects object
     }
@@ -265,6 +265,19 @@ const AppSetting = () => {
                     value={formData.cancelOrderCharges} 
                     onChange={e => handleTextChange('cancelOrderCharges', e.target.value)}
                     fullWidth 
+                    sx={{
+                        '& input[type=number]': {
+                            MozAppearance: 'textfield'
+                        },
+                        '& input[type=number]::-webkit-outer-spin-button': {
+                            WebkitAppearance: 'none',
+                            margin: 0
+                        },
+                        '& input[type=number]::-webkit-inner-spin-button': {
+                            WebkitAppearance: 'none',
+                            margin: 0
+                        }
+                    }}
                 />
                  <CustomTextField 
                     label='Admin Commission Charges (%)' 
@@ -272,6 +285,19 @@ const AppSetting = () => {
                     value={formData.adminCommissionCharges} 
                     onChange={e => handleTextChange('adminCommissionCharges', e.target.value)}
                     fullWidth 
+                    sx={{
+                        '& input[type=number]': {
+                            MozAppearance: 'textfield'
+                        },
+                        '& input[type=number]::-webkit-outer-spin-button': {
+                            WebkitAppearance: 'none',
+                            margin: 0
+                        },
+                        '& input[type=number]::-webkit-inner-spin-button': {
+                            WebkitAppearance: 'none',
+                            margin: 0
+                        }
+                    }}
                 />
             </CardContent>
         </Card>
@@ -302,6 +328,19 @@ const AppSetting = () => {
                     value={formData.minWithdrawalAmount} 
                     onChange={e => handleTextChange('minWithdrawalAmount', e.target.value)}
                     fullWidth 
+                    sx={{
+                        '& input[type=number]': {
+                            MozAppearance: 'textfield'
+                        },
+                        '& input[type=number]::-webkit-outer-spin-button': {
+                            WebkitAppearance: 'none',
+                            margin: 0
+                        },
+                        '& input[type=number]::-webkit-inner-spin-button': {
+                            WebkitAppearance: 'none',
+                            margin: 0
+                        }
+                    }}
                 />
             </CardContent>
         </Card>
