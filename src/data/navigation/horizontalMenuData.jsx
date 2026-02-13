@@ -192,6 +192,7 @@ const horizontalMenuData = dictionary => [
         icon: 'tabler-logout',
         href: '/login'
       }
+
     ]
   }
 ]

@@ -163,7 +163,10 @@ const HorizontalMenu = ({ dictionary }) => {
              onClick={async e => {
               e.preventDefault()
               localStorage.removeItem('token')
-              await signOut({ callbackUrl: '/login' })
+              localStorage.removeItem('admin')
+              localStorage.removeItem('userData')
+              await signOut({ redirect: false })
+              window.location.href = `/${locale}/login`
             }}
           >
             {dictionary['navigation'].logout || 'Logout'}
