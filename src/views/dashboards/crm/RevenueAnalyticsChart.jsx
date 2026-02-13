@@ -59,10 +59,18 @@ const RevenueAnalyticsChart = () => {
         const res = await getRevenueAnalytics(startDate, endDate)
 
         if (res && res.status) {
-          const fetchedData = res.revenueAnalyticsChartData || res.revenueAnalytics || res.data || []
+          // Check for the specific array from the recent API response
+          let fetchedData = res.totalEarningWithCommission || res.revenueAnalyticsChartData || res.revenueAnalytics || res.data || []
 
-          // Adjust mapping based on actual API response structure
-          const chartData = fetchedData.map(item => item.revenue || item.totalAmount || item.total || item.count || 0)
+          // Sort data by date (assuming _id is DD-MM-YYYY)
+          fetchedData = [...fetchedData].sort((a, b) => {
+             const dateA = a._id ? a._id.split('-').reverse().join('-') : ''
+             const dateB = b._id ? b._id.split('-').reverse().join('-') : ''
+             return new Date(dateA) - new Date(dateB)
+          })
+
+          // Map the data
+          const chartData = fetchedData.map(item => item.totalEarningWithCommission || item.revenue || item.totalAmount || item.total || item.count || 0)
           const labels = fetchedData.map(item => item._id || item.date || '')
 
           setSeries([{ name: 'Revenue', data: chartData }])
@@ -84,14 +92,7 @@ const RevenueAnalyticsChart = () => {
       toolbar: { show: false }
     },
     colors: [infoColor],
-    plotOptions: {
-      bar: {
-        borderRadius: 8,
-        columnWidth: '40%',
-        startingShape: 'rounded',
-        endingShape: 'rounded'
-      }
-    },
+    stroke: { width: 3, curve: 'smooth' },
     dataLabels: { enabled: false },
     grid: {
       show: true,
@@ -144,7 +145,7 @@ const RevenueAnalyticsChart = () => {
             <Typography>Loading...</Typography>
           </div>
         ) : (
-          <AppReactApexCharts type='bar' height={341} width='100%' series={series} options={options} />
+          <AppReactApexCharts type='line' height={341} width='100%' series={series} options={options} />
         )}
       </CardContent>
     </Card>

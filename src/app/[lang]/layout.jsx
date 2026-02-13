@@ -8,6 +8,7 @@ import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
 // Component Imports
+import FetchInterceptor from '@/components/FetchInterceptor'
 
 // HOC Imports
 import TranslationWrapper from '@/hocs/TranslationWrapper'
@@ -48,6 +49,7 @@ const RootLayout = async props => {
       <html id='__next' lang={params.lang} dir={direction} suppressHydrationWarning>
         <body className='flex is-full min-bs-full flex-auto flex-col'>
           <InitColorSchemeScript attribute='data' defaultMode={systemMode} />
+          <FetchInterceptor />
           {children}
         </body>
       </html>

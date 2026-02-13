@@ -124,7 +124,7 @@ const TopProductsSellersTabs = () => {
         </td>
         <td className='pli-2 plb-3 pie-6 text-center'>
           <div className='flex items-center justify-center gap-1'>
-            <Rating size='small' value={row.rating || row.avgRating || 0} readOnly />
+            <Rating size='small' value={row.rating || row.avgRating || 0} precision={0.5} readOnly />
             {/* <Typography variant='body2'>({row.rating || row.reviewCount || 0})</Typography> */}
           </div>
         </td>

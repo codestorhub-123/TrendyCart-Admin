@@ -111,7 +111,7 @@ const RecentOrderTable = () => {
                         </td>
                         <td className='pli-2 plb-3 pie-6 text-center'>
                             <Typography color='text.primary'>
-                                {row.totalAmount || row.grandTotal || row.total || 0}
+                                {row.finalTotal || row.grandTotal || row.total || 0}
                             </Typography>
                         </td>
                         </tr>
