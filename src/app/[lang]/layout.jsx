@@ -29,9 +29,9 @@ export const metadata = {
   title: 'Trendy Cart',
   description: 'Trendy Cart - Admin Dashboard',
   icons: {
-    icon: '/logo.png?v=1.1',
-    shortcut: '/logo.png?v=1.1',
-    apple: '/logo.png?v=1.1'
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg'
   }
 }
 

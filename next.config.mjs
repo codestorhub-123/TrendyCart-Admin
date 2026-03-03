@@ -54,7 +54,7 @@ const nextConfig = {
         locale: false
       },
       {
-        source: '/((?!(?:en|fr|ar|front-pages|favicon.ico|icon.png|logo.png|trendy-card-logo.png|manifest.json|_next|api|storage)\\b)):path',
+        source: '/((?!(?:en|fr|ar|front-pages|favicon.svg|icon.png|logo.png|trendy-card-logo.png|manifest.json|_next|api|storage)\\b)):path',
         destination: '/en/:path',
         permanent: true,
         locale: false
