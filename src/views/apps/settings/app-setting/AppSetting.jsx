@@ -254,6 +254,23 @@ const AppSetting = () => {
         </Card>
       </Grid>
 
+      <Grid item xs={12} md={6}>
+         <Card>
+            <CardHeader 
+                title='Allow Seller to Add Product' 
+                action={
+                    <Switch 
+                        checked={settingData?.isSellerCanAddProduct || false}
+                        onChange={() => handleToggle('isSellerCanAddProduct')}
+                    />
+                }
+            />
+            <CardContent>
+                <Typography color='text.secondary'>Global product adding logic switch for seller</Typography>
+            </CardContent>
+        </Card>
+      </Grid>
+
       {/* Row 3 */}
       <Grid item xs={12} md={6}>
         <Card>

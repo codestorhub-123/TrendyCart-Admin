@@ -37,7 +37,10 @@ import { useSelector } from 'react-redux'
 
 import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@components/TablePaginationComponent'
-import { getRealProducts, toggleNewCollection, toggleOutOfStock, updateProduct, deleteProduct } from '@/services/productService'
+import { getRealProducts, toggleNewCollection, toggleOutOfStock, updateProduct, deleteProduct, createProductByAdmin } from '@/services/productService'
+import { getRealSeller } from '@/services/sellerService'
+import { getAllCategories } from '@/services/categoryService'
+import { listAllSubCategories } from '@/services/subCategoryService'
 import tableStyles from '@core/styles/table.module.css'
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -72,6 +75,28 @@ const RealProductsTable = () => {
   const [totalPages, setTotalPages] = useState(0)
   const [totalProducts, setTotalProducts] = useState(0)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [sellers, setSellers] = useState([])
+  const [categories, setCategories] = useState([])
+  const [subCategories, setSubCategories] = useState([])
+
+  // Add dialog state
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [addLoading, setAddLoading] = useState(false)
+  const [addFormData, setAddFormData] = useState({
+    productName: '',
+    description: '',
+    price: '',
+    category: '',
+    subCategory: '',
+    shippingCharges: '',
+    productCode: '',
+    productSaleType: 0,
+    quantity: 0,
+    attributes: '[]',
+    seller: '',
+    mainImage: null,
+    images: []
+  })
   
   // Edit dialog state
   const [editDialogOpen, setEditDialogOpen] = useState(false)
@@ -114,7 +139,111 @@ const RealProductsTable = () => {
 
   useEffect(() => {
     fetchData()
+    fetchSellers()
+    fetchCategories()
   }, [pagination.pageIndex, pagination.pageSize, refreshKey])
+
+  useEffect(() => {
+    if (addFormData.category) {
+      fetchSubCategories(addFormData.category)
+    } else {
+      setSubCategories([])
+    }
+  }, [addFormData.category])
+
+  const fetchSellers = async () => {
+    // Fetch all sellers (using a large limit)
+    const res = await getRealSeller(1, 100)
+    if (res && res.status === true) {
+      setSellers(res.sellers || [])
+    }
+  }
+
+  const fetchCategories = async () => {
+    const res = await getAllCategories()
+    if (res && res.status === true) {
+      setCategories(res.category || res.categories || res.data || [])
+    }
+  }
+
+  const fetchSubCategories = async (categoryId) => {
+    const res = await listAllSubCategories(categoryId)
+    if (res && res.status === true) {
+      setSubCategories(res.subCategory || res.subCategories || res.data || [])
+    }
+  }
+
+  const handleAddOpen = () => {
+    setAddFormData({
+      productName: '',
+      description: '',
+      price: '',
+      category: '',
+      subCategory: '',
+      shippingCharges: '',
+      productCode: '',
+      productSaleType: 0,
+      quantity: 0,
+      attributes: '[]',
+      seller: '',
+      mainImage: null,
+      images: []
+    })
+    setAddDialogOpen(true)
+  }
+
+  const handleAddClose = () => {
+    setAddDialogOpen(false)
+  }
+
+  const handleAddSubmit = async () => {
+    setAddLoading(true)
+    try {
+      const formData = new FormData()
+
+      // Required fields
+      formData.append('productName', addFormData.productName)
+      formData.append('description', addFormData.description)
+      formData.append('price', addFormData.price)
+      formData.append('category', addFormData.category)
+      formData.append('subCategory', addFormData.subCategory)
+      formData.append('shippingCharges', addFormData.shippingCharges)
+      formData.append('productCode', addFormData.productCode)
+      formData.append('productSaleType', addFormData.productSaleType)
+      formData.append('quantity', addFormData.quantity)
+      formData.append('attributes', addFormData.attributes)
+
+      // Seller ID is required
+      if (addFormData.seller) {
+        formData.append('sellerId', addFormData.seller)
+      }
+
+      if (addFormData.mainImage) formData.append('mainImage', addFormData.mainImage)
+
+      if (addFormData.images && addFormData.images.length > 0) {
+        addFormData.images.forEach((image) => {
+          formData.append('images', image)
+        })
+      }
+
+      console.log('Creating real product')
+      const res = await createProductByAdmin(formData)
+      console.log('Create response:', res)
+
+      if (res && res.status === true) {
+        toast.success(res.message || 'Product created successfully')
+        setAddDialogOpen(false)
+        setRefreshKey(prev => prev + 1)
+      } else {
+        toast.error(res.message || 'Failed to create product')
+      }
+    } catch (error) {
+      console.error('Error creating product:', error)
+      toast.error('An error occurred while creating the product')
+    } finally {
+      setAddLoading(false)
+    }
+  }
 
   const handleEdit = (product) => {
     setEditProduct(product)
@@ -444,15 +573,22 @@ const RealProductsTable = () => {
 
   return (
     <Card>
-      <CardHeader title='Products' />
-      <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
-        <DebouncedInput
-          value={globalFilter ?? ''}
-          onChange={value => setGlobalFilter(String(value))}
-          placeholder='Searching for...'
-          className='max-sm:is-full'
-        />
-      </div>
+      <CardHeader
+        title='Products'
+        action={
+          <div className='flex items-center gap-4'>
+            <DebouncedInput
+              value={globalFilter ?? ''}
+              onChange={value => setGlobalFilter(String(value))}
+              placeholder='Searching for...'
+              className='max-sm:is-full'
+            />
+            <Button variant='contained' startIcon={<i className='tabler-plus' />} onClick={handleAddOpen}>
+              Add Product
+            </Button>
+          </div>
+        }
+      />
       <div className='overflow-x-auto'>
         <table className={tableStyles.table}>
           <thead>
@@ -675,6 +811,186 @@ const RealProductsTable = () => {
           </Button>
           <Button onClick={handleDeleteConfirm} variant='contained' color='error' disabled={deleteLoading}>
             {deleteLoading ? 'Deleting...' : 'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Add Product Dialog */}
+      <Dialog open={addDialogOpen} onClose={handleAddClose} maxWidth='md' fullWidth>
+        <DialogTitle>Add Real Product</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={4} sx={{ mt: 1 }}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label='Seller'
+                value={addFormData.seller}
+                onChange={(e) => setAddFormData({ ...addFormData, seller: e.target.value })}
+                SelectProps={{ native: true }}
+                InputLabelProps={{ shrink: true }}
+              >
+                <option value='' disabled>-- Select Seller --</option>
+                {sellers.map((seller, index) => (
+                  <option key={seller._id || index} value={seller._id}>
+                    {seller.firstName} {seller.lastName}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label='Product Name'
+                value={addFormData.productName}
+                onChange={(e) => setAddFormData({ ...addFormData, productName: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label='Product Code (6 digit)'
+                value={addFormData.productCode}
+                onChange={(e) => setAddFormData({ ...addFormData, productCode: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label='Category'
+                value={addFormData.category}
+                onChange={(e) => setAddFormData({ ...addFormData, category: e.target.value, subCategory: '' })}
+                SelectProps={{ native: true }}
+                InputLabelProps={{ shrink: true }}
+              >
+                <option value='' disabled>-- Select Category --</option>
+                {categories.map((category) => {
+                  const id = category._id || category.id
+                  if (!id) return null
+                  return <option key={id} value={id}>{category.name}</option>
+                })}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label='Sub Category'
+                value={addFormData.subCategory}
+                onChange={(e) => setAddFormData({ ...addFormData, subCategory: e.target.value })}
+                SelectProps={{ native: true }}
+                InputLabelProps={{ shrink: true }}
+                disabled={!addFormData.category}
+              >
+                <option value='' disabled>-- Select Sub Category --</option>
+                {subCategories.map((sub) => {
+                  const id = sub._id || sub.id || sub.subCategoryId
+                  if (!id) return null
+                  return <option key={id} value={id}>{sub.name}</option>
+                })}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label={`Price (${currency})`}
+                type='number'
+                value={addFormData.price}
+                onChange={(e) => setAddFormData({ ...addFormData, price: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label={`Shipping Charge (${currency})`}
+                type='number'
+                value={addFormData.shippingCharges}
+                onChange={(e) => setAddFormData({ ...addFormData, shippingCharges: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                label='Quantity'
+                type='number'
+                value={addFormData.quantity}
+                onChange={(e) => setAddFormData({ ...addFormData, quantity: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label='Product Sale Type'
+                value={addFormData.productSaleType}
+                onChange={(e) => setAddFormData({ ...addFormData, productSaleType: e.target.value })}
+                SelectProps={{ native: true }}
+              >
+                <option value={0}>Buy Now</option>
+                <option value={1}>Auction</option>
+                <option value={2}>Both</option>
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant='outlined'
+                component='label'
+                fullWidth
+              >
+                Choose Main Image
+                <input
+                  type='file'
+                  hidden
+                  accept='image/*'
+                  onChange={(e) => setAddFormData({ ...addFormData, mainImage: e.target.files[0] })}
+                />
+              </Button>
+              {addFormData.mainImage && (
+                <Typography variant='caption' sx={{ mt: 1, display: 'block' }}>
+                  Selected: {addFormData.mainImage.name}
+                </Typography>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label='Description'
+                multiline
+                rows={4}
+                value={addFormData.description}
+                onChange={(e) => setAddFormData({ ...addFormData, description: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant='outlined'
+                component='label'
+                fullWidth
+              >
+                Select Multiple Images
+                <input
+                  type='file'
+                  hidden
+                  multiple
+                  accept='image/*'
+                  onChange={(e) => setAddFormData({ ...addFormData, images: Array.from(e.target.files) })}
+                />
+              </Button>
+              {addFormData.images.length > 0 && (
+                <Typography variant='caption' sx={{ mt: 1, display: 'block' }}>
+                  {addFormData.images.length} image(s) selected
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAddClose} color='secondary' disabled={addLoading}>
+            Cancel
+          </Button>
+          <Button onClick={handleAddSubmit} variant='contained' color='primary' disabled={addLoading}>
+            {addLoading ? 'Creating...' : 'Create'}
           </Button>
         </DialogActions>
       </Dialog>

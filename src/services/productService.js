@@ -1,6 +1,6 @@
 import { getApiBase, getHeaders } from '@/utils/getApiBase'
 
-// Create product by admin
+// Create product by admin real product
 export const createProductByAdmin = async (formData) => {
   const url = `${getApiBase()}/admin/product/createProductByAdmin`
   try {
@@ -15,7 +15,6 @@ export const createProductByAdmin = async (formData) => {
     return { status: false, message: error.message }
   }
 }
-
 
 
 // Create fake product by admin (uses same API as createProductByAdmin)
