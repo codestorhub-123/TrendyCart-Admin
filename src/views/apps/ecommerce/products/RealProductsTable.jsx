@@ -212,6 +212,8 @@ const RealProductsTable = () => {
       formData.append('productSaleType', addFormData.productSaleType)
       formData.append('quantity', addFormData.quantity)
       formData.append('attributes', addFormData.attributes)
+      formData.append('isFake', false)
+      formData.append('createStatus', 1)
 
       // Seller ID is required
       if (addFormData.seller) {

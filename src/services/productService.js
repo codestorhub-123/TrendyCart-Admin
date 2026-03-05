@@ -17,7 +17,7 @@ export const createProductByAdmin = async (formData) => {
 }
 
 
-// Create fake product by admin (uses same API as createProductByAdmin)
+// Create product by admin (Real or Fake based on isFake flag in formData)
 export const createFakeProductByAdmin = async (formData) => {
   const url = `${getApiBase()}/admin/product/createProductByAdmin`
   try {

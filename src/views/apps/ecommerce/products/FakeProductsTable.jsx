@@ -212,6 +212,8 @@ const FakeProductsTable = () => {
       formData.append('productSaleType', addFormData.productSaleType)
       formData.append('quantity', addFormData.quantity)
       formData.append('attributes', addFormData.attributes)
+      formData.append('isFake', true)
+      formData.append('createStatus', 1)
       
       // Seller ID is required for fake products
       if (addFormData.seller) {
@@ -488,7 +490,7 @@ const FakeProductsTable = () => {
       columnHelper.accessor('delete', {
         header: 'DELETE',
         cell: ({ row }) => (
-          <IconButton onClick={() => handleDeleteClick(row.original._id)}>
+          <IconButton onClick={() => handleDeleteOpen(row.original._id)}>
             <i className='tabler-trash text-error' />
           </IconButton>
         ),
