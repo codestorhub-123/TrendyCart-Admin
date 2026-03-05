@@ -380,10 +380,12 @@ const RealProductsTable = () => {
         const errorMsg = res?.message || 'Failed to delete product'
         toast.error(errorMsg)
         console.error('Delete failed:', errorMsg)
+        setDeleteDialogOpen(false)
       }
     } catch (error) {
       console.error('Delete error:', error)
       toast.error('An error occurred while deleting the product')
+      setDeleteDialogOpen(false)
     } finally {
       setDeleteLoading(false)
     }

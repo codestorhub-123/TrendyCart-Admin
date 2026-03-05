@@ -354,6 +354,7 @@ const FakeProductsTable = () => {
       
       if (res && res.status === true) {
         toast.success(res.message || 'Product deleted successfully')
+        setDeleteDialogOpen(false)
         // Force refresh from server
         const start = pagination.pageIndex + 1
         const freshData = await getFakeProducts(start, pagination.pageSize)
@@ -365,12 +366,14 @@ const FakeProductsTable = () => {
         }
       } else {
         toast.error(res.message || 'Failed to delete product')
+        setDeleteDialogOpen(false)
         // Revert optimistic update if failed (simplified: just refresh)
         setRefreshKey(prev => prev + 1)
       }
     } catch (error) {
       console.error('Error deleting product:', error)
       toast.error('An error occurred while deleting the product')
+      setDeleteDialogOpen(false)
     } finally {
       setDeleteLoading(false)
       setDeleteProductId(null)
@@ -443,13 +446,21 @@ const FakeProductsTable = () => {
       }),
       columnHelper.accessor('status', {
         header: 'STATUS',
-        cell: ({ row }) => (
-          <Chip
-            label={row.original.createStatus === 1 ? 'Approved' : row.original.createStatus === 2 ? 'Rejected' : 'Pending'}
-            color={row.original.createStatus === 1 ? 'success' : row.original.createStatus === 2 ? 'error' : 'warning'}
-            size='small'
-          />
-        )
+        cell: ({ row }) => {
+          const status = row.original.createStatus
+          let label = 'Pending'
+          let color = 'warning'
+
+          if (status === 1 || status === 'Approved') {
+            label = 'Approved'
+            color = 'success'
+          } else if (status === 2 || status === 'Rejected') {
+            label = 'Rejected'
+            color = 'error'
+          }
+
+          return <Chip label={label} color={color} size='small' />
+        }
       }),
       columnHelper.accessor('isNewCollection', {
         header: 'NEW COLLECTION',
