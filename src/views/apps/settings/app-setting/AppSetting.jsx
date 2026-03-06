@@ -254,7 +254,8 @@ const AppSetting = () => {
                 </Card>
             </Grid>
             {/* seller add product switch */}
-            <Grid item xs={12} md={6}>
+            
+            {/* <Grid item xs={12} md={6}>
                 <Card>
                     <CardHeader
                         title='Allow Seller to Add Product'
@@ -269,7 +270,7 @@ const AppSetting = () => {
                         <Typography color='text.secondary'>Global product adding logic switch for seller</Typography>
                     </CardContent>
                 </Card>
-            </Grid>
+            </Grid> */}
 
             {/* Row 3 */}
             <Grid item xs={12} md={6}>
