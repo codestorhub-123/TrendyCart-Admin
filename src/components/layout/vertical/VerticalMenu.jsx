@@ -37,16 +37,17 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
   const params = useParams()
 
   // States
-  const [isAdminStoreVisible, setIsAdminStoreVisible] = useState(false)
+  const [isSellerCanAddProduct, setIsSellerCanAddProduct] = useState(true)
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const { getSetting } = await import('@/services/settingService')
         const res = await getSetting()
+        console.log('Sidebar Fetch sync Check :', res?.setting?.isSellerCanAddProduct)
 
         if (res?.status && res.setting) {
-          setIsSellerCanAddProduct(res.setting.isSellerCanAddProduct ?? true)
+          setIsSellerCanAddProduct(res.setting.isSellerCanAddProduct)
         }
       } catch (error) {
         console.error('Failed to fetch settings in VerticalMenu:', error)
@@ -146,7 +147,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
           </MenuItem>
         </MenuSection>
 
-        {isAdminStoreVisible && (
+        {isSellerCanAddProduct === false && (
           <MenuSection label={dictionary['navigation'].myOwnStore}>
             {/* <MenuItem
               href={`/${locale}/apps/ecommerce/my-store/dashboard`}
