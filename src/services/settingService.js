@@ -9,11 +9,14 @@ const getJsonHeaders = () => {
 
 // Get all settings
 export const getSetting = async () => {
-  const url = `${getApiBase()}/admin/setting`
+  const url = `${getApiBase()}/admin/setting?t=${new Date().getTime()}`
   try {
     const res = await fetch(url, {
       method: 'GET',
-      headers: getJsonHeaders()
+      headers: getJsonHeaders(),
+      cache: 'no-store',
+      // If using Next.js 13+ fetch features
+      next: { revalidate: 0 }
     })
     return res.json()
   } catch (error) {

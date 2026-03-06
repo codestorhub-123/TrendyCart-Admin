@@ -130,6 +130,9 @@
         "support": "Support",
         "setting": "Setting",
         "profile": "Profile",
-        "logout": "Logout"
+        "logout": "Logout",
+        "myOwnStore": "MY OWN STORE",
+        "myDashboard": "Dashboard (Own Stats)",
+        "manageOrders": "Admin Orders"
     }
 }

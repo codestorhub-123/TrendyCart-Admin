@@ -116,6 +116,15 @@ const verticalMenuData = dictionary => [
     icon: 'tabler-shopping-cart',
     href: '/apps/ecommerce/orders/list'
   },
+  // {
+  //   isSection: true,
+  //   label: dictionary['navigation'].myOwnStore
+  // },
+  // {
+  //   label: dictionary['navigation'].manageOrders,
+  //   icon: 'tabler-package',
+  //   href: '/apps/ecommerce/my-store/orders'
+  // },
   {
     isSection: true,
     label: dictionary['navigation'].userManagement

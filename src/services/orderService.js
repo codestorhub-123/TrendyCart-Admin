@@ -79,3 +79,50 @@ export const updateOrder = async (data) => {
     throw error
   }
 }
+
+/**
+ * Get Admin's own store stats
+ * @returns {Promise}
+ */
+export const getAdminOwnStats = async () => {
+  try {
+    const token = localStorage.getItem('token')
+    const response = await axios.get(`${getApiBase()}/admin/order/getAdminOwnStats`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching admin own stats:', error)
+    throw error
+  }
+}
+
+/**
+ * Get Admin's own orders
+ * @param {number} page 
+ * @param {number} limit 
+ * @param {string} status 
+ * @returns {Promise}
+ */
+export const getAdminOwnOrders = async (page = 1, limit = 10, status = '') => {
+  try {
+    const token = localStorage.getItem('token')
+    let url = `${getApiBase()}/admin/order/getAdminOwnOrders?page=${page}&limit=${limit}`
+    
+    if (status && status !== 'All') {
+      url += `&status=${status}`
+    }
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching admin own orders:', error)
+    throw error
+  }
+}

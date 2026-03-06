@@ -123,7 +123,15 @@ const AdminEarningTable = () => {
       }),
       columnHelper.accessor('adminEarning', {
         header: 'ADMIN EARNING ()',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.commissionPerProductQuantity || 0}</Typography>,
+        cell: ({ row }) => {
+          const earning = row.original.commissionPerProductQuantity
+
+          return (
+            <Typography color='text.primary'>
+              {earning && earning !== 0 ? Math.round(earning * 100) / 100 : '-'}
+            </Typography>
+          )
+        },
         size: 150
       }),
       columnHelper.accessor('date', {

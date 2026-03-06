@@ -311,11 +311,15 @@ const OrderListTable = () => {
       }),
       columnHelper.accessor('adminCommission', {
         header: 'ADMIN COMMISSION',
-        cell: ({ row }) => (
-          <Typography variant='body2' className='font-medium'>
-            {row.original.itemData?.commissionPerProductQuantity || 0}
-          </Typography>
-        )
+        cell: ({ row }) => {
+          const commission = row.original.itemData?.commissionPerProductQuantity
+
+          return (
+            <Typography variant='body2' className='font-medium'>
+              {commission && commission !== 0 ? Math.round(commission * 100) / 100 : 'Own Product'}
+            </Typography>
+          )
+        }
       }),
       columnHelper.accessor('paymentStatus', {
         header: 'PAYMENT STATUS',

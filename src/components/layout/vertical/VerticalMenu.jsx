@@ -1,3 +1,6 @@
+// React Imports
+import { useState, useEffect } from 'react'
+
 // Next Imports
 import { useParams } from 'next/navigation'
 
@@ -33,6 +36,25 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
   const verticalNavOptions = useVerticalNav()
   const params = useParams()
 
+  // States
+  const [isAdminStoreVisible, setIsAdminStoreVisible] = useState(false)
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { getSetting } = await import('@/services/settingService')
+        const res = await getSetting()
+
+        if (res?.status && res.setting) {
+          setIsSellerCanAddProduct(res.setting.isSellerCanAddProduct ?? true)
+        }
+      } catch (error) {
+        console.error('Failed to fetch settings in VerticalMenu:', error)
+      }
+    }
+    fetchSettings()
+  }, [])
+
   // Vars
   const { isBreakpointReached, transitionDuration } = verticalNavOptions
   const { lang: locale } = params
@@ -42,13 +64,13 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
     <ScrollWrapper
       {...(isBreakpointReached
         ? {
-            className: 'bs-full overflow-y-auto overflow-x-hidden',
-            onScroll: container => scrollMenu(container, false)
-          }
+          className: 'bs-full overflow-y-auto overflow-x-hidden',
+          onScroll: container => scrollMenu(container, false)
+        }
         : {
-            options: { wheelPropagation: false, suppressScrollX: true },
-            onScrollY: container => scrollMenu(container, true)
-          })}
+          options: { wheelPropagation: false, suppressScrollX: true },
+          onScrollY: container => scrollMenu(container, true)
+        })}
     >
       <Menu
         popoutMenuOffset={{ mainAxis: 23 }}
@@ -60,7 +82,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
         <MenuItem href={`/${locale}/dashboards/crm`} icon={<i className='tabler-smart-home' />}>
           {dictionary['navigation'].dashboards}
         </MenuItem>
-        
+
         <MenuSection label={dictionary['navigation'].productManagement}>
           <MenuItem href={`/${locale}/apps/ecommerce/products/attribute`} icon={<i className='tabler-key' />}>
             {dictionary['navigation'].attribute}
@@ -124,6 +146,23 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
           </MenuItem>
         </MenuSection>
 
+        {isAdminStoreVisible && (
+          <MenuSection label={dictionary['navigation'].myOwnStore}>
+            {/* <MenuItem
+              href={`/${locale}/apps/ecommerce/my-store/dashboard`}
+              icon={<i className='tabler-chart-pie' />}
+            >
+              {dictionary['navigation'].myDashboard}
+            </MenuItem> */}
+            <MenuItem
+              href={`/${locale}/apps/ecommerce/my-store/orders`}
+              icon={<i className='tabler-package' />}
+            >
+              {dictionary['navigation'].manageOrders}
+            </MenuItem>
+          </MenuSection>
+        )}
+
         <MenuSection label={dictionary['navigation'].userManagement}>
           <MenuItem href={`/${locale}/apps/user/list`} icon={<i className='tabler-user' />}>
             {dictionary['navigation'].user}
@@ -154,7 +193,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
           <MenuItem href={`/${locale}/pages/admin-profile`} icon={<i className='tabler-user' />}>
             {dictionary['navigation'].profile || 'Profile'}
           </MenuItem>
-          <MenuItem 
+          <MenuItem
             icon={<i className='tabler-logout' />}
             onClick={async e => {
               e.preventDefault()
