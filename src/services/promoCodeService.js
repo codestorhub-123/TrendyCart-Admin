@@ -8,7 +8,7 @@ const getJsonHeaders = () => {
 }
 
 export const getAllPromoCodes = async () => {
-  const url = `${getApiBase()}/admin/promoCode/getAll`
+  const url = `${getApiBase()}/admin/promoCode/getAll?isAdmin=true`
   try {
     const res = await fetch(url, {
       method: 'GET',
