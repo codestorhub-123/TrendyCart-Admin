@@ -14,12 +14,16 @@ export const getProductRequestsByStatus = async (status) => {
   }
 }
 
-export const acceptOrRejectRequest = async (requestId, type) => {
-  const url = `${getApiBase()}/admin/productRequest/acceptUpdateRequest?requestId=${requestId}&type=${type}`
+export const acceptOrRejectRequest = async (requestId, type, rejectionReason) => {
+  const url = `${getApiBase()}/admin/productRequest/acceptUpdateRequest?requestId=${requestId}`
   try {
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: getHeaders()
+      headers: {
+        ...getHeaders(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ type, rejectionReason })
     })
     return res.json()
   } catch (error) {
@@ -28,12 +32,16 @@ export const acceptOrRejectRequest = async (requestId, type) => {
   }
 }
 
-export const acceptCreateRequest = async (productId, type) => {
-  const url = `${getApiBase()}/admin/productRequest/acceptCreateRequest?productId=${productId}&type=${type}`
+export const acceptCreateRequest = async (productId, type, rejectionReason) => {
+  const url = `${getApiBase()}/admin/productRequest/acceptCreateRequest?productId=${productId}`
   try {
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: getHeaders()
+      headers: {
+        ...getHeaders(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ type, rejectionReason })
     })
     return res.json()
   } catch (error) {

@@ -20,6 +20,10 @@ import {
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import { useSelector } from 'react-redux'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
 
 import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@components/TablePaginationComponent'
@@ -61,6 +65,10 @@ const ProductRequestTable = ({ status }) => {
   const [globalFilter, setGlobalFilter] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('new') // 'new' | 'updated'
+  const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false)
+  const [rejectionReason, setRejectionReason] = useState('')
+  const [selectedRequestId, setSelectedRequestId] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { currency } = useSelector(state => state.settingsReducer)
 
   const fetchData = async () => {
@@ -105,21 +113,33 @@ const ProductRequestTable = ({ status }) => {
     }
   }
 
-  const handleReject = async (requestId) => {
-    if (window.confirm('Are you sure you want to reject this request?')) {
-      let res
-      if (activeTab === 'new') {
-         res = await acceptCreateRequest(requestId, 'Rejected')
-      } else {
-         res = await acceptOrRejectRequest(requestId, 'Rejected')
-      }
+  const handleReject = (requestId) => {
+    setSelectedRequestId(requestId)
+    setRejectionReason('')
+    setRejectionDialogOpen(true)
+  }
 
-      if (res && res.status === true) {
-        fetchData()
-      } else {
-        alert(res?.message || 'Failed to reject request')
-      }
+  const confirmRejection = async () => {
+    if (!rejectionReason.trim()) {
+      alert('Please provide a reason for rejection')
+      return
     }
+
+    setIsSubmitting(true)
+    let res
+    if (activeTab === 'new') {
+      res = await acceptCreateRequest(selectedRequestId, 'Rejected', rejectionReason)
+    } else {
+      res = await acceptOrRejectRequest(selectedRequestId, 'Rejected', rejectionReason)
+    }
+
+    if (res && res.status === true) {
+      setRejectionDialogOpen(false)
+      fetchData()
+    } else {
+      alert(res?.message || 'Failed to reject request')
+    }
+    setIsSubmitting(false)
   }
 
   const columns = useMemo(
@@ -331,6 +351,47 @@ const ProductRequestTable = ({ status }) => {
       <TablePaginationComponent
         table={table}
       />
+
+      <Dialog
+        open={rejectionDialogOpen}
+        onClose={() => !isSubmitting && setRejectionDialogOpen(false)}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle>Reason for Rejection</DialogTitle>
+        <DialogContent>
+          <Box sx={{ pt: 2 }}>
+            <CustomTextField
+              fullWidth
+              multiline
+              rows={4}
+              label='Rejection Reason'
+              placeholder='Enter reason for rejection (e.g. Images are blurry, Price is too high)'
+              value={rejectionReason}
+              onChange={e => setRejectionReason(e.target.value)}
+              disabled={isSubmitting}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 6, pb: 6 }}>
+          <Button 
+            onClick={() => setRejectionDialogOpen(false)} 
+            color='secondary' 
+            variant='tonal'
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={confirmRejection} 
+            color='error' 
+            variant='contained'
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Submitting...' : 'Reject Request'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   )
 }
