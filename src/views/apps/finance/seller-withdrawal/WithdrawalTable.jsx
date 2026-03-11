@@ -46,12 +46,12 @@ const fuzzyFilter = (row, columnId, value, addMeta) => {
 const columnHelper = createColumnHelper()
 
 const RejectDialog = ({ open, handleClose, onSubmit, isLoading }) => {
-  const [reason, setReason] = useState('')
+  const [rejectionReason, setRejectionReason] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    onSubmit(reason)
+    onSubmit(rejectionReason)
   }
 
   return (
@@ -63,10 +63,10 @@ const RejectDialog = ({ open, handleClose, onSubmit, isLoading }) => {
               fullWidth
               multiline
               rows={4}
-              label='Reason'
-              placeholder='Enter rejection reason...'
-              value={reason}
-              onChange={e => setReason(e.target.value)}
+              label='Rejection Reason'
+              placeholder='Enter rejection reason (e.g. Bank details incorrect, Insufficient balance)'
+              value={rejectionReason}
+              onChange={e => setRejectionReason(e.target.value)}
               required
             />
         </DialogContent>
@@ -151,11 +151,11 @@ const WithdrawalTable = () => {
     setSelectedRequest(null)
   }
 
-  const handleRejectSubmit = async (reason) => {
+  const handleRejectSubmit = async (rejectionReason) => {
     if (!selectedRequest) return
     setActionLoading(true)
     try {
-        const res = await rejectWithdrawalRequest(selectedRequest._id, reason)
+        const res = await rejectWithdrawalRequest(selectedRequest._id, rejectionReason)
         if (res && res.status === true) {
             toast.success(res.message || 'Request rejected successfully')
             handleCloseReject()

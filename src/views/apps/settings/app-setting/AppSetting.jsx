@@ -28,9 +28,9 @@ const AppSetting = () => {
         cancelOrderCharges: 0,
         adminCommissionCharges: 0,
         resendApiKey: '',
-        minWithdrawalAmount: 0,
-        openAiKey: '',
-        firebaseKey: ''
+        withdrawLimit: 0,
+        openaiApiKey: '',
+        privateKey: ''
     })
 
     const fetchData = async () => {
@@ -44,9 +44,9 @@ const AppSetting = () => {
                 cancelOrderCharges: res.setting.cancelOrderCharges || 0,
                 adminCommissionCharges: res.setting.adminCommissionCharges || 0,
                 resendApiKey: res.setting.resendApiKey || '',
-                minWithdrawalAmount: res.setting.withdrawLimit || 0,
-                openAiKey: res.setting.openaiApiKey || '',
-                firebaseKey: typeof res.setting.privateKey === 'object' ? JSON.stringify(res.setting.privateKey) : (res.setting.privateKey || '')
+                withdrawLimit: res.setting.withdrawLimit || 0,
+                openaiApiKey: res.setting.openaiApiKey || '',
+                privateKey: typeof res.setting.privateKey === 'object' ? JSON.stringify(res.setting.privateKey) : (res.setting.privateKey || '')
             })
         }
         setIsLoading(false)
@@ -121,9 +121,9 @@ const AppSetting = () => {
             cancelOrderCharges: Number(formData.cancelOrderCharges),
             adminCommissionCharges: Number(formData.adminCommissionCharges),
             resendApiKey: formData.resendApiKey,
-            minPayout: Number(formData.minWithdrawalAmount),
-            openAiKey: formData.openAiKey,
-            firebaseKey: formData.firebaseKey // Assuming string for now, validation might be needed if backend expects object
+            withdrawLimit: Number(formData.withdrawLimit),
+            openaiApiKey: formData.openaiApiKey,
+            privateKey: formData.privateKey 
         }
 
         const res = await updateSetting(settingData._id, payload)
@@ -343,8 +343,8 @@ const AppSetting = () => {
                         <CustomTextField
                             label='Minimum Withdrawal Amount'
                             type='number'
-                            value={formData.minWithdrawalAmount}
-                            onChange={e => handleTextChange('minWithdrawalAmount', e.target.value)}
+                            value={formData.withdrawLimit}
+                            onChange={e => handleTextChange('withdrawLimit', e.target.value)}
                             fullWidth
                             sx={{
                                 '& input[type=number]': {
@@ -371,8 +371,8 @@ const AppSetting = () => {
                         <CustomTextField
                             label='Open AI Key'
                             placeholder='Enter You Open AI Key here'
-                            value={formData.openAiKey}
-                            onChange={e => handleTextChange('openAiKey', e.target.value)}
+                            value={formData.openaiApiKey}
+                            onChange={e => handleTextChange('openaiApiKey', e.target.value)}
                             fullWidth
                         />
                     </CardContent>
@@ -389,8 +389,8 @@ const AppSetting = () => {
                             placeholder='Paste your service account private key JSON here...'
                             multiline
                             rows={8}
-                            value={formData.firebaseKey}
-                            onChange={e => handleTextChange('firebaseKey', e.target.value)}
+                            value={formData.privateKey}
+                            onChange={e => handleTextChange('privateKey', e.target.value)}
                             fullWidth
                         />
                     </CardContent>

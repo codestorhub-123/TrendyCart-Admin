@@ -218,13 +218,12 @@ const OtherSetting = () => {
     const updatePayload = {
         privacyPolicyText: privacyText,
         privacyPolicyLink: privacyLink,
-        termsAndConditionsText: termsText,
+        termsConditionText: termsText,
         termsAndConditionsLink: termsLink,
-        adminCommissionCharges: settingData?.commissionPercent || 0,
+        adminCommissionCharges: settingData?.adminCommissionCharges || 0,
         cancelOrderCharges: settingData?.cancelOrderCharges || 0,
         withdrawCharges: settingData?.withdrawCharges || 0,
-        withdrawLimit: settingData?.withdrawLimit || 0,
-        minPayout: settingData?.minValueForWithdrawal || 0
+        withdrawLimit: settingData?.withdrawLimit || 0
     }
 
     const res = await updateSetting(settingData._id, updatePayload)

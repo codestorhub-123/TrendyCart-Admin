@@ -39,13 +39,13 @@ export const approveWithdrawalRequest = async (requestId) => {
 }
 
 // Reject a withdrawal request
-export const rejectWithdrawalRequest = async (requestId, reason) => {
+export const rejectWithdrawalRequest = async (requestId, rejectionReason) => {
   const url = `${getApiBase()}/admin/withdrawRequest/rejectWithdrawalRequest`
   try {
     const res = await fetch(url, {
       method: 'PATCH',
       headers: getJsonHeaders(),
-      body: JSON.stringify({ requestId, reason })
+      body: JSON.stringify({ requestId, rejectionReason })
     })
     return res.json()
   } catch (error) {
