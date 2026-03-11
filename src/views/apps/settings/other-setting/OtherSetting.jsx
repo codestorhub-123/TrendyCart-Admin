@@ -136,7 +136,7 @@ const RichTextEditor = ({ content, onChange, placeholder }) => {
     ],
     content: content,
     onUpdate: ({ editor }) => {
-        onChange(editor.getHTML())
+      onChange(editor.getHTML())
     },
     immediatelyRender: false
   })
@@ -144,21 +144,21 @@ const RichTextEditor = ({ content, onChange, placeholder }) => {
   // Update editor content when content prop changes remotely (initial load)
   useEffect(() => {
     if (editor && content && editor.getHTML() !== content) {
-        // Avoid re-setting cursor position if editing, but for initial load it's fine
-        // This check is simple and might need refinement for real-time collab, but fine here
-        if(editor.getText() === '' && content !== '<p></p>') {
-             editor.commands.setContent(content)
-        }
+      // Avoid re-setting cursor position if editing, but for initial load it's fine
+      // This check is simple and might need refinement for real-time collab, but fine here
+      if (editor.getText() === '' && content !== '<p></p>') {
+        editor.commands.setContent(content)
+      }
     }
   }, [content, editor])
 
   return (
     <Card className='p-0 border shadow-none'>
-        <CardContent className='p-0'>
+      <CardContent className='p-0'>
         <EditorToolbar editor={editor} />
         <Divider className='mli-6' />
         <EditorContent editor={editor} className='bs-[200px] overflow-y-auto flex ' />
-        </CardContent>
+      </CardContent>
     </Card>
   )
 }
@@ -183,7 +183,7 @@ const OtherSetting = () => {
       setPrivacyText(res.setting.privacyPolicyText || '')
       setPrivacyLink(res.setting.privacyPolicyLink || '')
       // Check if terms properties exist, if not default to empty
-      setTermsText(res.setting.termsConditionText || '') 
+      setTermsText(res.setting.termsConditionText || '')
       setTermsLink(res.setting.termsAndConditionsLink || '')
     }
     setIsLoading(false)
@@ -202,39 +202,39 @@ const OtherSetting = () => {
     setIsSubmitLoading(true)
 
     const payload = {
-        ...settingData, // keep existing data
-        privacyPolicyText: privacyText,
-        privacyPolicyLink: privacyLink,
-        termsConditionText: termsText, // Assuming this is the key
-        termsAndConditionsLink: termsLink
+      ...settingData, // keep existing data
+      privacyPolicyText: privacyText,
+      privacyPolicyLink: privacyLink,
+      termsConditionText: termsText, // Assuming this is the key
+      termsAndConditionsLink: termsLink
     }
 
     // Clean up payload - sometimes we don't want to send back everything
     // But updateSetting usually merges or replaces. 
     // Based on settingService, it callsPATCH /admin/setting/update
-    
+
     // Create a specific object for update to avoid sending read-only id or timestamps if needed
     // But usually backend handles. Let's send specific fields to be safe.
     const updatePayload = {
-        privacyPolicyText: privacyText,
-        privacyPolicyLink: privacyLink,
-        termsConditionText: termsText,
-        termsAndConditionsLink: termsLink,
-        adminCommissionCharges: settingData?.adminCommissionCharges || 0,
-        cancelOrderCharges: settingData?.cancelOrderCharges || 0,
-        withdrawCharges: settingData?.withdrawCharges || 0,
-        withdrawLimit: settingData?.withdrawLimit || 0
+      privacyPolicyText: privacyText,
+      privacyPolicyLink: privacyLink,
+      termsConditionText: termsText,
+      termsAndConditionsLink: termsLink,
+      adminCommissionCharges: settingData?.adminCommissionCharges || 0,
+      cancelOrderCharges: settingData?.cancelOrderCharges || 0,
+      withdrawCharges: settingData?.withdrawCharges || 0,
+      withdrawLimit: settingData?.withdrawLimit || 0
     }
 
     const res = await updateSetting(settingData._id, updatePayload)
 
     if (res && res.status === true) {
-        toast.success(res.message || 'Settings updated successfully')
-        if (res.setting) {
-             setSettingData(res.setting)
-        }
+      toast.success(res.message || 'Settings updated successfully')
+      if (res.setting) {
+        setSettingData(res.setting)
+      }
     } else {
-        toast.error(res.message || 'Failed to update settings')
+      toast.error(res.message || 'Failed to update settings')
     }
     setIsSubmitLoading(false)
   }
@@ -245,53 +245,53 @@ const OtherSetting = () => {
     <Card>
       <TabContext value={activeTab}>
         <div className='flex border-b pl-6'>
-            <TabList onChange={handleTabChange} aria-label='other settings tabs'>
-                <Tab label='Privacy policy' value='privacy' />
-                <Tab label='Terms and condition' value='terms' />
-            </TabList>
+          <TabList onChange={handleTabChange} aria-label='other settings tabs'>
+            <Tab label='Privacy policy' value='privacy' />
+            <Tab label='Terms and condition' value='terms' />
+          </TabList>
         </div>
 
         <TabPanel value='privacy' className='p-6'>
-             <Typography variant='h5' className='mb-6'>Privacy Policy:</Typography>
-             <div className='mb-12'>
-                <RichTextEditor 
-                    content={privacyText} 
-                    onChange={setPrivacyText} 
-                    placeholder="Enter Privacy Policy content..." 
-                />
-             </div>
-             <CustomTextField 
-                label='Privacy Policy Link' 
-                fullWidth 
-                value={privacyLink} 
-                onChange={(e) => setPrivacyLink(e.target.value)} 
-                placeholder='https://...'
-             />
+          <Typography variant='h5' className='mb-6'>Privacy Policy:</Typography>
+          <div className='mb-12'>
+            <RichTextEditor
+              content={privacyText}
+              onChange={setPrivacyText}
+              placeholder="Enter Privacy Policy content..."
+            />
+          </div>
+          <CustomTextField
+            label='Privacy Policy Link'
+            fullWidth
+            value={privacyLink}
+            onChange={(e) => setPrivacyLink(e.target.value)}
+            placeholder='https://...'
+          />
         </TabPanel>
 
         <TabPanel value='terms' className='p-6'>
-             <Typography variant='h5' className='mb-6'>Terms and Conditions:</Typography>
-             <div className='mb-12'>
-                <RichTextEditor 
-                    content={termsText} 
-                    onChange={setTermsText} 
-                    placeholder="Enter Terms and Conditions content..." 
-                />
-             </div>
-             <CustomTextField 
-                label='Terms and Condition Link' 
-                fullWidth 
-                value={termsLink} 
-                onChange={(e) => setTermsLink(e.target.value)} 
-                placeholder='https://...'
-             />
+          <Typography variant='h5' className='mb-6'>Terms and Conditions:</Typography>
+          <div className='mb-12'>
+            <RichTextEditor
+              content={termsText}
+              onChange={setTermsText}
+              placeholder="Enter Terms and Conditions content..."
+            />
+          </div>
+          <CustomTextField
+            label='Terms and Condition Link'
+            fullWidth
+            value={termsLink}
+            onChange={(e) => setTermsLink(e.target.value)}
+            placeholder='https://...'
+          />
         </TabPanel>
       </TabContext>
-        
+
       <div className='flex justify-end p-6'>
-          <Button variant='contained' onClick={handleSubmit} disabled={isSubmitLoading}>
-            {isSubmitLoading ? 'Saving...' : 'Submit'}
-          </Button>
+        <Button variant='contained' onClick={handleSubmit} disabled={isSubmitLoading}>
+          {isSubmitLoading ? 'Saving...' : 'Submit'}
+        </Button>
       </div>
     </Card>
   )
