@@ -1,3 +1,5 @@
+'use client'
+
 // Next Imports
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -14,6 +16,8 @@ import ModeDropdown from '@components/layout/shared/ModeDropdown'
 import ShortcutsDropdown from '@components/layout/shared/ShortcutsDropdown'
 import NotificationsDropdown from '@components/layout/shared/NotificationsDropdown'
 import UserDropdown from '@components/layout/shared/UserDropdown'
+import Chip from '@mui/material/Chip'
+import { useEffect, useState } from 'react'
 
 // Hook Imports
 import useHorizontalNav from '@menu/hooks/useHorizontalNav'
@@ -114,6 +118,21 @@ const NavbarContent = () => {
   // Hooks
   const { isBreakpointReached } = useHorizontalNav()
   const { lang: locale } = useParams()
+  const [isDemo, setIsDemo] = useState(false)
+
+  useEffect(() => {
+    const adminStr = localStorage.getItem('admin')
+    if (adminStr) {
+      try {
+        const admin = JSON.parse(adminStr)
+        if (admin.isDemo || admin.email === 'admin@demo.com' || admin.email === 'seller@demo.com') {
+          setIsDemo(true)
+        }
+      } catch (e) {
+        console.error('Failed to parse admin data', e)
+      }
+    }
+  }, [])
 
   return (
     <div
@@ -126,6 +145,16 @@ const NavbarContent = () => {
           <Link href={getLocalizedUrl('/', locale)}>
             <Logo />
           </Link>
+        )}
+        {isDemo && (
+          <Chip
+            size='small'
+            label='Demo Mode (Read Only)'
+            color='warning'
+            variant='tonal'
+            icon={<i className='tabler-alert-circle text-lg' />}
+            className='animate-pulse'
+          />
         )}
       </div>
 

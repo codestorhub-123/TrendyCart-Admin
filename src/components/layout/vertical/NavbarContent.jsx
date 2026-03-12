@@ -1,3 +1,5 @@
+'use client'
+
 // Third-party Imports
 import classnames from 'classnames'
 
@@ -9,6 +11,8 @@ import ModeDropdown from '@components/layout/shared/ModeDropdown'
 import ShortcutsDropdown from '@components/layout/shared/ShortcutsDropdown'
 import NotificationsDropdown from '@components/layout/shared/NotificationsDropdown'
 import UserDropdown from '@components/layout/shared/UserDropdown'
+import Chip from '@mui/material/Chip'
+import { useEffect, useState } from 'react'
 
 // Util Imports
 import { verticalLayoutClasses } from '@layouts/utils/layoutClasses'
@@ -102,11 +106,37 @@ const notifications = [
 ]
 
 const NavbarContent = () => {
+  const [isDemo, setIsDemo] = useState(false)
+
+  useEffect(() => {
+    const adminStr = localStorage.getItem('admin')
+    if (adminStr) {
+      try {
+        const admin = JSON.parse(adminStr)
+        if (admin.isDemo || admin.email === 'admin@demo.com' || admin.email === 'seller@demo.com') {
+          setIsDemo(true)
+        }
+      } catch (e) {
+        console.error('Failed to parse admin data', e)
+      }
+    }
+  }, [])
+
   return (
     <div className={classnames(verticalLayoutClasses.navbarContent, 'flex items-center justify-between gap-4 is-full')}>
       <div className='flex items-center gap-4'>
         <NavToggle />
         <NavSearch />
+        {isDemo && (
+          <Chip
+            size='small'
+            label='Demo Mode (Read Only)'
+            color='warning'
+            variant='tonal'
+            className='animate-pulse'
+            icon={<i className='tabler-alert-circle text-lg' />}
+          />
+        )}
       </div>
       <div className='flex items-center'>
         {/* <LanguageDropdown /> */}

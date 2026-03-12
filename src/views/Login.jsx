@@ -15,6 +15,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
+import Divider from '@mui/material/Divider'
 
 // Third-party Imports
 import { Controller, useForm } from 'react-hook-form'
@@ -82,16 +83,16 @@ const Login = ({ mode }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const [viewMode, setViewMode] = useState('login') // 'login' or 'forgot-password'
-  
+
   // Forgot Password Form
   const {
-      control: forgotPasswordControl,
-      handleSubmit: handleForgotPasswordSubmit,
-      formState: { errors: forgotPasswordErrors }
+    control: forgotPasswordControl,
+    handleSubmit: handleForgotPasswordSubmit,
+    formState: { errors: forgotPasswordErrors }
   } = useForm({
-      defaultValues: {
-          email: ''
-      }
+    defaultValues: {
+      email: ''
+    }
   })
 
   // Vars
@@ -101,7 +102,7 @@ const Login = ({ mode }) => {
   const lightIllustration = '/images/illustrations/auth/v2-login-light.png'
   const borderedDarkIllustration = '/images/illustrations/auth/v2-login-dark-border.png'
   const borderedLightIllustration = '/images/illustrations/auth/v2-login-light-border.png'
-  
+
   // Hooks
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -124,7 +125,7 @@ const Login = ({ mode }) => {
   })
 
   // ... existing illustrations ...
-  
+
   const characterIllustration = useImageVariant(
     mode,
     lightIllustration,
@@ -135,14 +136,49 @@ const Login = ({ mode }) => {
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
+  const handleDemoLogin = async (type) => {
+    const demoCredentials = {
+      admin: { email: 'admin@demo.com', password: 'admin123' },
+      seller: { email: 'seller@demo.com', password: 'seller123' }
+    }
+
+    const credentials = demoCredentials[type]
+    setIsLoading(true)
+    setErrorState(null)
+
+    try {
+      const { ok, result } = await login(credentials.email, credentials.password)
+
+      if (ok && result.success) {
+        localStorage.setItem('token', result.data.token)
+        localStorage.setItem('admin', JSON.stringify(result.data.admin))
+
+        const redirectURL = searchParams.get('redirectTo') ?? themeConfig.homePageUrl
+        const currentLocale = locale || 'en'
+
+        const finalUrl = redirectURL.startsWith(`/${currentLocale}`)
+          ? redirectURL
+          : `/${currentLocale}${redirectURL}`
+
+        window.location.href = finalUrl
+      } else {
+        setErrorState({ message: [result.message || 'Demo login failed'] })
+      }
+    } catch (err) {
+      setErrorState({ message: ['Something went wrong. Please try again.'] })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const onSubmit = async data => {
     setIsLoading(true)
     setErrorState(null)
-    
+
     // ... existing login logic ...
     try {
       const { ok, result } = await login(data.email, data.password)
-      const res = { ok } 
+      const res = { ok }
 
       if (res.ok && result.success) {
         localStorage.setItem('token', result.data.token)
@@ -150,7 +186,7 @@ const Login = ({ mode }) => {
 
         const redirectURL = searchParams.get('redirectTo') ?? themeConfig.homePageUrl
         const currentLocale = locale || 'en'
-        
+
         const finalUrl = redirectURL.startsWith(`/${currentLocale}`)
           ? redirectURL
           : `/${currentLocale}${redirectURL}`
@@ -170,18 +206,18 @@ const Login = ({ mode }) => {
     setIsLoading(true)
 
     try {
-        const res = await forgotPassword(data.email)
+      const res = await forgotPassword(data.email)
 
-        if (res.status) {
-            toast.success(res.message || 'Temporary password sent to your email')
-            setViewMode('login')
-        } else {
-            toast.error(res.message || 'Failed to send temporary password')
-        }
+      if (res.status) {
+        toast.success(res.message || 'Temporary password sent to your email')
+        setViewMode('login')
+      } else {
+        toast.error(res.message || 'Failed to send temporary password')
+      }
     } catch (error) {
-        toast.error('An error occurred')
+      toast.error('An error occurred')
     } finally {
-        setIsLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -203,140 +239,161 @@ const Login = ({ mode }) => {
           <Logo />
         </div>
         <div className='flex flex-col gap-6 is-full sm:is-auto md:is-full sm:max-is-[400px] md:max-is-[unset] mbs-8 sm:mbs-11 md:mbs-0'>
-          
+
           {viewMode === 'login' ? (
-              <>
-                <div className='flex flex-col gap-1'>
-                  <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</Typography>
-                  <Typography>Please sign-in to your admin account</Typography>
-                </div>
-                {errorState && <Alert severity='error'>{errorState.message[0]}</Alert>}
-                <form
-                  noValidate
-                  autoComplete='off'
-                  action={() => {}}
-                  onSubmit={handleSubmit(onSubmit)}
-                  className='flex flex-col gap-6'
-                >
+            <>
+              <div className='flex flex-col gap-1'>
+                <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</Typography>
+                <Typography>Please sign-in to your admin account</Typography>
+              </div>
+              {errorState && <Alert severity='error'>{errorState.message[0]}</Alert>}
+              <form
+                noValidate
+                autoComplete='off'
+                action={() => { }}
+                onSubmit={handleSubmit(onSubmit)}
+                className='flex flex-col gap-6'
+              >
+                <Controller
+                  name='email'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <CustomTextField
+                      {...field}
+                      autoFocus
+                      fullWidth
+                      type='email'
+                      label='Email'
+                      placeholder='Enter your email'
+                      onChange={e => {
+                        field.onChange(e.target.value)
+                        errorState !== null && setErrorState(null)
+                      }}
+                      {...(errors.email && {
+                        error: true,
+                        helperText: errors?.email?.message
+                      })}
+                    />
+                  )}
+                />
+                <div>
                   <Controller
-                    name='email'
+                    name='password'
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
                       <CustomTextField
                         {...field}
-                        autoFocus
                         fullWidth
-                        type='email'
-                        label='Email'
-                        placeholder='Enter your email'
+                        label='Password'
+                        placeholder='············'
+                        id='login-password'
+                        type={isPasswordShown ? 'text' : 'password'}
                         onChange={e => {
                           field.onChange(e.target.value)
                           errorState !== null && setErrorState(null)
                         }}
-                        {...(errors.email && {
-                          error: true,
-                          helperText: errors?.email?.message
-                        })}
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton
+                                  edge='end'
+                                  onClick={handleClickShowPassword}
+                                  onMouseDown={e => e.preventDefault()}
+                                >
+                                  <i className={isPasswordShown ? 'tabler-eye' : 'tabler-eye-off'} />
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }
+                        }}
+                        {...(errors.password && { error: true, helperText: errors.password.message })}
                       />
                     )}
                   />
-                  <div>
-                    <Controller
-                        name='password'
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                        <CustomTextField
-                            {...field}
-                            fullWidth
-                            label='Password'
-                            placeholder='············'
-                            id='login-password'
-                            type={isPasswordShown ? 'text' : 'password'}
-                            onChange={e => {
-                            field.onChange(e.target.value)
-                            errorState !== null && setErrorState(null)
-                            }}
-                            slotProps={{
-                            input: {
-                                endAdornment: (
-                                <InputAdornment position='end'>
-                                    <IconButton
-                                    edge='end'
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={e => e.preventDefault()}
-                                    >
-                                    <i className={isPasswordShown ? 'tabler-eye' : 'tabler-eye-off'} />
-                                    </IconButton>
-                                </InputAdornment>
-                                )
-                            }
-                            }}
-                            {...(errors.password && { error: true, helperText: errors.password.message })}
-                        />
-                        )}
-                    />
-                    <div className='flex justify-end mt-2'>
-                        <Typography 
-                            variant='body2' 
-                            className='cursor-pointer text-primary' 
-                            onClick={() => setViewMode('forgot-password')}
-                        >
-                            Forgot Password?
-                        </Typography>
-                    </div>
+                  <div className='flex justify-end mt-2'>
+                    <Typography
+                      variant='body2'
+                      className='cursor-pointer text-primary'
+                      onClick={() => setViewMode('forgot-password')}
+                    >
+                      Forgot Password?
+                    </Typography>
                   </div>
-                  <Button fullWidth variant='contained' type='submit' disabled={isLoading}>
-                    {isLoading ? <CircularProgress size={24} color='inherit' /> : 'Login'}
-                  </Button>
-                </form>
-              </>
-          ) : (
-              <>
-                <div className='flex flex-col gap-1 text-center'>
-                    <Typography variant='h6' color='text.secondary'>Welcome back !!!</Typography>
-                    <Typography variant='h3' className='font-bold mb-4'>Forgot Password</Typography>
                 </div>
-                <form
-                    noValidate
-                    autoComplete='off'
-                    onSubmit={handleForgotPasswordSubmit(onForgotPasswordSubmit)}
-                    className='flex flex-col gap-6'
-                >
-                    <Controller
-                        name='email'
-                        control={forgotPasswordControl}
-                        rules={{ required: true, pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }}
-                        render={({ field }) => (
-                            <CustomTextField
-                                {...field}
-                                autoFocus
-                                fullWidth
-                                type='email'
-                                label='Email'
-                                placeholder='Enter your email'
-                                {...(forgotPasswordErrors.email && {
-                                    error: true,
-                                    helperText: 'Please enter a valid email'
-                                })}
-                            />
-                        )}
+                <Button fullWidth variant='contained' type='submit' disabled={isLoading}>
+                  {isLoading ? <CircularProgress size={24} color='inherit' /> : 'Login'}
+                </Button>
+                <Divider className='gap-2 text-textPrimary uppercase'>or Login as Demo</Divider>
+                <div className='flex gap-4 items-center justify-center'>
+                  <Button
+                    variant='tonal'
+                    color='primary'
+                    className='flex-1'
+                    onClick={() => handleDemoLogin('admin')}
+                    disabled={isLoading}
+                  >
+                    Admin Demo
+                  </Button>
+                  {/* <Button
+                    variant='tonal'
+                    color='secondary'
+                    className='flex-1'
+                    onClick={() => handleDemoLogin('seller')}
+                    disabled={isLoading}
+                  >
+                    Seller Demo
+                  </Button> */}
+                </div>
+              </form>
+            </>
+          ) : (
+            <>
+              <div className='flex flex-col gap-1 text-center'>
+                <Typography variant='h6' color='text.secondary'>Welcome back !!!</Typography>
+                <Typography variant='h3' className='font-bold mb-4'>Forgot Password</Typography>
+              </div>
+              <form
+                noValidate
+                autoComplete='off'
+                onSubmit={handleForgotPasswordSubmit(onForgotPasswordSubmit)}
+                className='flex flex-col gap-6'
+              >
+                <Controller
+                  name='email'
+                  control={forgotPasswordControl}
+                  rules={{ required: true, pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }}
+                  render={({ field }) => (
+                    <CustomTextField
+                      {...field}
+                      autoFocus
+                      fullWidth
+                      type='email'
+                      label='Email'
+                      placeholder='Enter your email'
+                      {...(forgotPasswordErrors.email && {
+                        error: true,
+                        helperText: 'Please enter a valid email'
+                      })}
                     />
-                    <Button fullWidth variant='contained' type='submit' disabled={isLoading}>
-                        {isLoading ? <CircularProgress size={24} color='inherit' /> : 'Send'}
-                    </Button>
-                    <div className='flex justify-center'>
-                        <Typography 
-                            variant='body2' 
-                            className='cursor-pointer text-primary'
-                            onClick={() => setViewMode('login')}
-                        >
-                            Take me back to login!
-                        </Typography>
-                    </div>
-                </form>
-              </>
+                  )}
+                />
+                <Button fullWidth variant='contained' type='submit' disabled={isLoading}>
+                  {isLoading ? <CircularProgress size={24} color='inherit' /> : 'Send'}
+                </Button>
+                <div className='flex justify-center'>
+                  <Typography
+                    variant='body2'
+                    className='cursor-pointer text-primary'
+                    onClick={() => setViewMode('login')}
+                  >
+                    Take me back to login!
+                  </Typography>
+                </div>
+              </form>
+            </>
           )}
         </div>
       </div>

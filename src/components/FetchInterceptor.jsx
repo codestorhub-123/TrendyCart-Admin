@@ -1,5 +1,8 @@
 'use client'
 
+// Third-party Imports
+import { toast } from 'react-hot-toast'
+
 if (typeof window !== 'undefined') {
   // Store the original fetch only once
   if (!window._originalFetch) {
@@ -25,6 +28,25 @@ if (typeof window !== 'undefined') {
           // This prevents the calling code from processing the error response while we redirect
           return new Promise(() => {}) 
       } 
+      // Check for 403 (Forbidden) - Demo Mode Handling
+      else if (response.status === 403) {
+          try {
+            const clone = response.clone()
+            const errorData = await clone.json()
+            const message = errorData.message || ''
+
+            if (message.toLowerCase().includes('demo')) {
+                toast.error('Ye action demo account me allowed nahi hai.', {
+                    duration: 4000,
+                    position: 'top-center'
+                })
+            } else {
+                toast.error(message || 'Access Forbidden')
+            }
+          } catch (err) {
+            toast.error('Access Forbidden')
+          }
+      }
       // Check for 500 (Internal Server Error) which might be masking an auth error
       else if (response.status === 500) {
           try {
@@ -33,8 +55,6 @@ if (typeof window !== 'undefined') {
             const errorText = await clone.text()
             const lowerError = errorText.toLowerCase()
             
-            console.log(`[FetchInterceptor] 500 Error Body:`, errorText)
-
             // keywords indicating token expiration or auth failure
             if (lowerError.includes('expire') || 
                 lowerError.includes('unauthorized') || 
