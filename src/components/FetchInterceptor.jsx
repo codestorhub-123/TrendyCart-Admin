@@ -11,8 +11,10 @@ if (typeof window !== 'undefined') {
 
   // Override fetch
   window.fetch = async (...args) => {
+    const url = typeof args[0] === 'string' ? args[0] : args[0]?.url
+    
     try {
-      const response = await window._originalFetch(...args)
+      const response = await window._originalFetch.apply(window, args)
       
       const currentPath = window.location.pathname
       // Prevent infinite redirect loop if already on login page
@@ -25,7 +27,6 @@ if (typeof window !== 'undefined') {
           console.warn('[FetchInterceptor] 401 Unauthorized detected. Initiating logout...')
           await handleLogout(currentPath, '401 Unauthorized')
           // Halt execution correctly by returning a never-resolving promise
-          // This prevents the calling code from processing the error response while we redirect
           return new Promise(() => {}) 
       } 
       // Check for 403 (Forbidden) - Demo Mode Handling
@@ -47,15 +48,13 @@ if (typeof window !== 'undefined') {
             toast.error('Access Forbidden')
           }
       }
-      // Check for 500 (Internal Server Error) which might be masking an auth error
+      // Check for 500 (Internal Server Error)
       else if (response.status === 500) {
           try {
-            // Clone response to read body without consuming the original
             const clone = response.clone()
             const errorText = await clone.text()
             const lowerError = errorText.toLowerCase()
             
-            // keywords indicating token expiration or auth failure
             if (lowerError.includes('expire') || 
                 lowerError.includes('unauthorized') || 
                 lowerError.includes('token') || 
@@ -64,7 +63,7 @@ if (typeof window !== 'undefined') {
                 
                 console.warn('[FetchInterceptor] 500 Auth Error detected. Initiating logout...')
                 await handleLogout(currentPath, `500 Error: ${errorText}`)
-                return new Promise(() => {}) // Halt execution
+                return new Promise(() => {}) 
             }
           } catch (err) {
             console.error('[FetchInterceptor] Failed to inspect 500 response', err)
@@ -73,7 +72,7 @@ if (typeof window !== 'undefined') {
 
       return response
     } catch (error) {
-      console.error('[FetchInterceptor] Network Error:', error)
+      console.error(`[FetchInterceptor] Network Error attempting to fetch: ${url}`, error)
       throw error
     }
   }
